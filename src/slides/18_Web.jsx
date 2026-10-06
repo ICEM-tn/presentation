@@ -3,23 +3,23 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Slide from '../components/Slide.jsx';
 
 const shots = [
-  { src: 'img/web/dashboard_web.png', name: 'Tableau de bord', desc: 'MTBF · MTTR · pannes' },
-  { src: 'img/web/equipements_web.png', name: 'Équipements', desc: 'Fiches machines' },
-  { src: 'img/web/interventions_web.png', name: 'Interventions', desc: 'Score IA affiché' },
-  { src: 'img/web/diagnostic_ia_web.png', name: 'Diagnostic IA', desc: 'Cause instantanée' },
-  { src: 'img/web/alertes_web.png', name: 'Alertes', desc: 'Temps réel' },
-  { src: 'img/web/tco_web.png', name: 'Fiabilité', desc: 'Rapport PDF' },
+  { src: 'img/web/dashboard_web.png', name: 'Tableau de bord', path: '/', desc: 'Équipements · interventions · disponibilité' },
+  { src: 'img/web/equipements_web.png', name: 'Équipements', path: '/equipements', desc: '13 machines · état · projet' },
+  { src: 'img/web/capteurs_live_web.png', name: 'Capteurs en direct', path: '/equipements', desc: '4 capteurs · rafraîchi toutes les 30 s' },
+  { src: 'img/web/interventions_web.png', name: 'Interventions', path: '/interventions', desc: 'Préventive · corrective · prédictive' },
+  { src: 'img/web/alertes_web.png', name: 'Alertes & IA', path: '/alertes', desc: 'Probabilité de panne · cause suggérée' },
+  { src: 'img/web/tco_web.png', name: 'Analyses', path: '/analyses', desc: 'MTBF · MTTR · disponibilité' },
 ];
 
 export default function Web() {
   const [i, setI] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % shots.length), 2400);
+    const t = setInterval(() => setI((v) => (v + 1) % shots.length), 5000);
     return () => clearInterval(t);
   }, []);
 
   return (
-    <Slide sectionLabel="05 · Application Web">
+    <Slide sectionLabel="04 · Développement — Application web">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -27,7 +27,7 @@ export default function Web() {
         className="slide-title"
         style={{ marginBottom: 12 }}
       >
-        Tableau de bord.
+        Écrans web.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -36,7 +36,7 @@ export default function Web() {
         className="slide-subtitle"
         style={{ marginBottom: 24 }}
       >
-        Pilotage complet pour le responsable maintenance.
+        Captures réelles · compte responsable maintenance.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 220px', gap: 24, alignItems: 'center' }}>
@@ -50,7 +50,7 @@ export default function Web() {
             background: '#0e1734',
             border: '1px solid rgba(104, 121, 201, 0.4)',
             borderRadius: 14,
-            aspectRatio: '16/9',
+            aspectRatio: '1875 / 958',
             overflow: 'hidden',
           }}
         >
@@ -65,7 +65,7 @@ export default function Web() {
               <div key={c} style={{ width: 10, height: 10, borderRadius: 999, background: c, opacity: 0.7 }} />
             ))}
             <div style={{ marginLeft: 12, fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--grey-500)' }}>
-              komax-gmao.render.com{shots[i].name === 'Tableau de bord' ? '/' : '/' + shots[i].name.toLowerCase()}
+              192.168.10.20/komax{shots[i].path}
             </div>
           </div>
           <div style={{ marginTop: 28, height: 'calc(100% - 28px)', overflow: 'hidden', borderRadius: 6 }}>
@@ -78,7 +78,7 @@ export default function Web() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'top' }}
               />
             </AnimatePresence>
           </div>

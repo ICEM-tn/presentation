@@ -18,7 +18,9 @@ Ouvre automatiquement `http://localhost:5175`.
 
 - `←` `→` `Espace` — naviguer entre slides
 - `Home` `End` — premier / dernier slide
-- `F` — mode plein ecran (a activer AVANT de commencer la soutenance)
+- `F11` — 1er appui : ouvre la fenetre du texte oral (a glisser sur l'ecran du PC, affichage Windows en mode « Etendre ») ; 2e appui (sur la fenetre des slides) : plein ecran. `N` ouvre aussi le texte oral, `F` bascule le plein ecran
+- En plein ecran, fleches, compteur et vignettes disparaissent du projecteur : on navigue depuis la fenetre du texte oral (← →, boutons ou vignettes)
+- `N` — rouvrir la fenetre du texte oral si elle a ete fermee
 - Boutons cercle en haut a gauche/droite — navigation souris
 
 ## Build pour deploiement

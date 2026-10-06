@@ -2,11 +2,12 @@ import { motion } from 'framer-motion';
 import Slide from '../components/Slide.jsx';
 
 const features = [
-  { n: '01', title: 'Connexion sécurisée', hint: 'JWT · rôles techniciens et chefs de ligne' },
-  { n: '02', title: 'Tableau de bord', hint: 'Machines assignées · alertes récentes' },
-  { n: '03', title: 'Interventions terrain', hint: 'Créer · consulter · photo avant/après' },
-  { n: '04', title: 'Checklist journalière', hint: 'Contrôle quotidien · photo OK/NOK' },
-  { n: '05', title: 'Notifications push', hint: 'Firebase · alertes IA temps réel' },
+  { n: '01', title: 'Connexion et tableau de bord', hint: 'Même charte que le web · indicateurs du parc' },
+  { n: '02', title: 'Interventions terrain', hint: 'Liste · calendrier · signalement · photos avant/après' },
+  { n: '03', title: 'Diagnostic IA', hint: "« Diagnostiquer avec l'IA » · carte adaptée au mobile" },
+  { n: '04', title: 'Suivi journalier', hint: 'Contrôles de prise de poste · photo OK/NOK' },
+  { n: '05', title: 'Checklists préventives', hint: "Saisie sur smartphone · photo d'évidence" },
+  { n: '06', title: 'Notifications push', hint: 'Firebase · alerte critique · intervention assignée' },
 ];
 
 export default function Mobile_Fonctionnalites() {
@@ -28,7 +29,7 @@ export default function Mobile_Fonctionnalites() {
         className="slide-subtitle"
         style={{ marginBottom: 32 }}
       >
-        Application Flutter pour les techniciens terrain.
+        Application Flutter · technicien et chef de ligne, au pied de la machine.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 40, alignItems: 'center', flex: 1 }}>

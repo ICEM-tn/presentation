@@ -3,10 +3,10 @@ import Slide from '../components/Slide.jsx';
 import AnimatedCounter from '../components/AnimatedCounter.jsx';
 
 const kpis = [
-  { label: 'F1-score', value: 0.835, decimals: 3, hint: 'XGBoost v3 · macro', color: 'var(--orange-400)' },
-  { label: 'Couches', value: 5, hint: 'Perception → App', color: 'var(--cyan-400)' },
-  { label: 'Modèles ML', value: 3, hint: 'RF · RF · XGBoost', color: 'var(--green-400)' },
-  { label: 'Endpoints', value: 40, hint: 'API REST + IA', color: 'var(--yellow-400)' },
+  { label: 'F1-score', value: 0.84, decimals: 2, decimalComma: true, hint: 'XGBoost v3 · cible binaire', color: 'var(--orange-400)' },
+  { label: 'Couches', value: 5, hint: 'Perception → Application', color: 'var(--cyan-400)' },
+  { label: 'Modèles ML', value: 4, hint: 'RF v1 · RF v2 · XGBoost · régression', color: 'var(--green-400)' },
+  { label: 'Requêtes Postman', value: 120, suffix: '+', hint: '16 dossiers · API testée', color: 'var(--yellow-400)' },
 ];
 
 export default function KPIs() {
@@ -28,7 +28,7 @@ export default function KPIs() {
         className="slide-subtitle"
         style={{ marginBottom: 48 }}
       >
-        Quatre chiffres qui resument six mois de travail.
+        4 chiffres qui résument 6 mois de travail.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
@@ -73,7 +73,7 @@ export default function KPIs() {
               color: k.color,
               textShadow: `0 0 30px ${k.color}55`,
             }}>
-              <AnimatedCounter to={k.value} decimals={k.decimals ?? 0} delay={0.6 + i * 0.13} duration={1.6} />
+              <AnimatedCounter to={k.value} decimals={k.decimals ?? 0} decimalComma={k.decimalComma} suffix={k.suffix ?? ''} delay={0.6 + i * 0.13} duration={1.6} />
             </div>
             <div style={{ fontSize: 12, color: 'var(--grey-300)', fontFamily: 'var(--font-mono)' }}>
               {k.hint}
@@ -101,7 +101,7 @@ export default function KPIs() {
         <div style={{ fontSize: 26 }}>✓</div>
         <div>
           <div style={{ fontSize: 15, fontWeight: 600 }}>
-            Chaîne complète de bout en bout — du capteur physique jusqu'à l'écran mobile.
+            Chaîne complète, du capteur physique jusqu'à l'écran mobile.
           </div>
         </div>
         <div style={{

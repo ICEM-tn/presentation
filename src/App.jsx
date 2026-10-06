@@ -3,8 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { slides } from './slides/index.js';
 import PageNav from './components/PageNav.jsx';
 import PresenterView from './PresenterView.jsx';
-
-const CHANNEL = 'komax-deck';
+import { createSync } from './sync.js';
 
 export default function App() {
   const isPresenter = typeof window !== 'undefined' &&
@@ -18,66 +17,52 @@ export default function App() {
 function MainDeck() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
-  const [presenterOpen, setPresenterOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const chanRef = useRef(null);
-  const suppressBroadcast = useRef(false);
+  const indexRef = useRef(0);
+  const syncRef = useRef(null);
   const presenterWinRef = useRef(null);
+  const [tip, setTip] = useState(null);
+  const tipTimerRef = useRef(null);
 
-  const clamp = useCallback(
-    (n) => Math.max(0, Math.min(slides.length - 1, n)),
-    []
-  );
-
-  const go = useCallback(
-    (delta) => {
-      setDirection(delta > 0 ? 1 : -1);
-      setIndex((prev) => clamp(prev + delta));
-    },
-    [clamp]
-  );
-
-  const goTo = useCallback(
-    (target) => {
-      setIndex((prev) => {
-        const next = clamp(target);
-        setDirection(next >= prev ? 1 : -1);
-        return next;
-      });
-    },
-    [clamp]
-  );
-
-  useEffect(() => {
-    const chan = new BroadcastChannel(CHANNEL);
-    chanRef.current = chan;
-    chan.postMessage({ type: 'main-hello' });
-
-    chan.onmessage = (e) => {
-      const msg = e.data;
-      if (!msg) return;
-      if (msg.type === 'index') {
-        suppressBroadcast.current = true;
-        setIndex((prev) => {
-          setDirection(msg.value >= prev ? 1 : -1);
-          return msg.value;
-        });
-      } else if (msg.type === 'presenter-ready' || msg.type === 'request-index') {
-        chan.postMessage({ type: 'index', value: index });
-      }
-    };
-
-    return () => chan.close();
+  const flashTip = useCallback((text) => {
+    clearTimeout(tipTimerRef.current);
+    setTip(text);
+    tipTimerRef.current = setTimeout(() => setTip(null), 4000);
   }, []);
 
-  useEffect(() => {
-    if (suppressBroadcast.current) {
-      suppressBroadcast.current = false;
-      return;
-    }
-    chanRef.current?.postMessage({ type: 'index', value: index });
-  }, [index]);
+  // Affiche la slide `target` ; `send` = false quand le changement vient de
+  // la fenêtre présentateur (pas de renvoi, donc pas d'écho).
+  const show = useCallback((target, send = true) => {
+    const next = Math.max(0, Math.min(slides.length - 1, target));
+    const prev = indexRef.current;
+    if (next === prev) return;
+    setDirection(next > prev ? 1 : -1);
+    indexRef.current = next;
+    setIndex(next);
+    if (send) syncRef.current?.send({ type: 'index', value: next });
+  }, []);
 
+  const go = useCallback((delta) => show(indexRef.current + delta), [show]);
+  const goTo = useCallback((target) => show(target), [show]);
+
+  useEffect(() => {
+    const sync = createSync(
+      () => presenterWinRef.current,
+      (msg) => {
+        if (msg.type === 'index') {
+          show(msg.value, false);
+        } else if (msg.type === 'presenter-ready' || msg.type === 'request-index') {
+          sync.send({ type: 'index', value: indexRef.current });
+        }
+      }
+    );
+    syncRef.current = sync;
+    sync.send({ type: 'main-hello' });
+    return () => sync.close();
+  }, [show]);
+
+  // Ouvre (ou ramène au premier plan) la fenêtre du texte oral.
+  // Doit être appelée pendant un appui clavier, sinon le navigateur bloque la fenêtre.
   const openPresenter = useCallback(() => {
     const existing = presenterWinRef.current;
     if (existing && !existing.closed) {
@@ -86,22 +71,8 @@ function MainDeck() {
     }
     const url = `${window.location.pathname}?present=1`;
     const features = 'popup=yes,width=1400,height=850,menubar=no,toolbar=no,location=no,status=no';
-    const win = window.open(url, 'komax-presenter', features);
-    presenterWinRef.current = win;
-    if (win) setPresenterOpen(true);
+    presenterWinRef.current = window.open(url, 'komax-presenter', features);
   }, []);
-
-  useEffect(() => {
-    if (!presenterOpen) return;
-    const t = setInterval(() => {
-      const w = presenterWinRef.current;
-      if (!w || w.closed) {
-        presenterWinRef.current = null;
-        setPresenterOpen(false);
-      }
-    }, 800);
-    return () => clearInterval(t);
-  }, [presenterOpen]);
 
   useEffect(() => {
     const detect = () => {
@@ -128,30 +99,46 @@ function MainDeck() {
         e.preventDefault();
         go(-1);
       } else if (e.key === 'Home') {
-        setDirection(-1);
-        setIndex(0);
+        show(0);
       } else if (e.key === 'End') {
-        setDirection(1);
-        setIndex(slides.length - 1);
+        show(slides.length - 1);
+      } else if (e.key === 'F11') {
+        // Plein écran + ouverture de fenêtre dans le même appui = conflit
+        // (Chrome : la fenêtre vole le focus ; Opera : popup bloquée).
+        // 1er F11 : ouvre le texte oral. 2e F11 : plein écran via l'API.
+        e.preventDefault();
+        const w = presenterWinRef.current;
+        if (!w || w.closed) {
+          openPresenter();
+          flashTip('Texte oral ouvert — placez-le sur l’écran du PC, cliquez ici puis F11');
+        } else {
+          toggleFullscreen();
+        }
       } else if (e.key === 'f' || e.key === 'F') {
         toggleFullscreen();
       } else if (e.key === 'h' || e.key === 'H') {
-        setDirection(-1);
-        setIndex(1);
+        show(1);
       } else if (e.key === 'n' || e.key === 'N') {
         openPresenter();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go, openPresenter]);
+  }, [go, show, openPresenter, flashTip]);
+
+  // Plein écran sans fenêtre texte oral (ex. F11 gardé par Opera) : petit rappel.
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const w = presenterWinRef.current;
+    if (!w || w.closed) flashTip('N = ouvrir le texte oral');
+  }, [isFullscreen, flashTip]);
 
   const Slide = useMemo(() => slides[index].component, [index]);
 
   const progress = ((index + 1) / slides.length) * 100;
 
   return (
-    <div className="deck-root">
+    <div className={`deck-root ${isFullscreen ? 'fs' : ''}`}>
       <div className="grid-bg" />
 
       <motion.div
@@ -177,48 +164,44 @@ function MainDeck() {
         </motion.div>
       </AnimatePresence>
 
-      <button
-        className="nav-btn nav-prev"
-        onClick={() => go(-1)}
-        aria-label="Slide precedente"
-        style={{ opacity: index === 0 ? 0.3 : 1 }}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M15 18l-6-6 6-6" />
-        </svg>
-      </button>
-      <button
-        className="nav-btn nav-next"
-        onClick={() => go(1)}
-        aria-label="Slide suivante"
-        style={{ opacity: index === slides.length - 1 ? 0.3 : 1 }}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M9 6l6 6-6 6" />
-        </svg>
-      </button>
-
+      {/* Numéro de slide : visible aussi en plein écran (coin bas-droit). */}
       <div className="slide-counter">
         <span className="current">{String(index + 1).padStart(2, '0')}</span>
         <span className="sep">/</span>
         <span className="total">{String(slides.length).padStart(2, '0')}</span>
       </div>
-      {!presenterOpen && !isFullscreen && (
-        <button
-          className="presenter-launch"
-          onClick={openPresenter}
-          title="Ouvrir le mode présentateur (N)"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="4" width="18" height="12" rx="2" />
-            <path d="M8 20h8M12 16v4" />
-          </svg>
-          Mode présentateur
-        </button>
-      )}
-      <div className="hint">← → naviguer &nbsp;·&nbsp; F plein écran &nbsp;·&nbsp; H plan &nbsp;·&nbsp; N notes présentateur</div>
 
-      <PageNav currentIndex={index} goTo={goTo} />
+      {tip && <div className="fs-tip">{tip}</div>}
+
+      {/* En plein écran, la navigation passe dans la fenêtre du texte oral. */}
+      {!isFullscreen && (
+        <>
+          <button
+            className="nav-btn nav-prev"
+            onClick={() => go(-1)}
+            aria-label="Slide precedente"
+            style={{ opacity: index === 0 ? 0.3 : 1 }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            className="nav-btn nav-next"
+            onClick={() => go(1)}
+            aria-label="Slide suivante"
+            style={{ opacity: index === slides.length - 1 ? 0.3 : 1 }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M9 6l6 6-6 6" />
+            </svg>
+          </button>
+
+          <div className="hint">← → naviguer &nbsp;·&nbsp; F11 : texte oral, F11 encore : plein écran &nbsp;·&nbsp; H plan</div>
+
+          <PageNav currentIndex={index} goTo={goTo} />
+        </>
+      )}
     </div>
   );
 }

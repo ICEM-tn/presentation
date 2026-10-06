@@ -11,14 +11,22 @@ import Objectif from './06_Objectif.jsx';
 // Section 2 — État de l'art
 import SectionDivider_Etat from './SectionDivider_Etat.jsx';
 import Scrum from './Scrum.jsx';
-import Capteurs from './08_Capteurs.jsx';
+import SensorDHT from './SensorDHT.jsx';
+import SensorMPU from './SensorMPU.jsx';
+import SensorAMG from './SensorAMG.jsx';
+import SensorSCT from './SensorSCT.jsx';
+import SensorDHTInstall from './SensorDHTInstall.jsx';
+import SensorMPUInstall from './SensorMPUInstall.jsx';
+import SensorAMGInstall from './SensorAMGInstall.jsx';
+import SensorSCTInstall from './SensorSCTInstall.jsx';
 import Stack from './Stack.jsx';
 
 // Section 3 — Conception
 import SectionDivider_Conception from './SectionDivider_Conception.jsx';
 import Architecture from './07_Architecture.jsx';
 import Edge from './09_Edge.jsx';
-import UML from './UML.jsx';
+import UMLUseCase from './UMLUseCase.jsx';
+import UMLClasses from './UMLClasses.jsx';
 import Pipeline from './17_Pipeline.jsx';
 
 // Section 4 — Développement
@@ -28,7 +36,8 @@ import IA from './11_IA.jsx';
 import Dataset from './13_Dataset.jsx';
 import Causes from './14_Causes.jsx';
 import F1 from './15_F1.jsx';
-import Confusion from './16_Confusion.jsx';
+import ConfusionRF from './ConfusionRF.jsx';
+import ROC from './ROC.jsx';
 import Web_Fonctionnalites from './Web_Fonctionnalites.jsx';
 import Web from './18_Web.jsx';
 import Mobile_Fonctionnalites from './Mobile_Fonctionnalites.jsx';
@@ -41,6 +50,7 @@ import SectionDivider_Demo from './SectionDivider_Demo.jsx';
 
 // Section 6 — Résultats et conclusion
 import KPIs from './21_KPIs.jsx';
+import Conclusion from './Conclusion.jsx';
 import Perspectives from './22_Perspectives.jsx';
 import Merci from './23_Merci.jsx';
 
@@ -59,14 +69,22 @@ export const slides = [
   // Section 2 — État de l'art
   { id: 'section_etat', component: SectionDivider_Etat },
   { id: 'scrum', component: Scrum },
-  { id: 'capteurs', component: Capteurs },
+  { id: 'sensor_dht', component: SensorDHT },
+  { id: 'sensor_mpu', component: SensorMPU },
+  { id: 'sensor_amg', component: SensorAMG },
+  { id: 'sensor_sct', component: SensorSCT },
   { id: 'stack', component: Stack },
 
   // Section 3 — Conception
   { id: 'section_conception', component: SectionDivider_Conception },
   { id: 'architecture', component: Architecture },
   { id: 'edge', component: Edge },
-  { id: 'uml', component: UML },
+  { id: 'sensor_dht_install', component: SensorDHTInstall },
+  { id: 'sensor_mpu_install', component: SensorMPUInstall },
+  { id: 'sensor_amg_install', component: SensorAMGInstall },
+  { id: 'sensor_sct_install', component: SensorSCTInstall },
+  { id: 'uml_usecase', component: UMLUseCase },
+  { id: 'uml_classes', component: UMLClasses },
   { id: 'pipeline', component: Pipeline },
 
   // Section 4 — Développement
@@ -76,7 +94,8 @@ export const slides = [
   { id: 'dataset', component: Dataset },
   { id: 'causes', component: Causes },
   { id: 'f1', component: F1 },
-  { id: 'confusion', component: Confusion },
+  { id: 'confusion_rf', component: ConfusionRF },
+  { id: 'roc', component: ROC },
   { id: 'web_fonc', component: Web_Fonctionnalites },
   { id: 'web_exemples', component: Web },
   { id: 'mobile_fonc', component: Mobile_Fonctionnalites },
@@ -89,6 +108,7 @@ export const slides = [
 
   // Section 6 — Résultats et conclusion
   { id: 'kpis', component: KPIs },
+  { id: 'conclusion', component: Conclusion },
   { id: 'perspectives', component: Perspectives },
   { id: 'merci', component: Merci },
 ];

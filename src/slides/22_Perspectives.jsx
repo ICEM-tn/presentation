@@ -5,26 +5,26 @@ const items = [
   {
     n: '01',
     title: 'Edge AI',
-    desc: 'Déployer le modèle XGBoost sur le Raspberry — décision locale sans reseau.',
-    tag: 'Court terme',
+    desc: 'XGBoost compressé sur le Raspberry Pi : détecter les pré-pannes même sans réseau.',
+    tag: 'IoT',
   },
   {
     n: '02',
-    title: 'Weibull',
-    desc: 'Remplacer la regression lineaire par une loi de Weibull pour la duree de vie.',
-    tag: 'Moyen terme',
+    title: 'Intégration HMI',
+    desc: 'Lire les alarmes Komax (OPC-UA ou Modbus) et les croiser avec le diagnostic IA.',
+    tag: 'Machine',
   },
   {
     n: '03',
-    title: 'Calibration par machine',
-    desc: 'Deltas capteur spécifiques Alpha vs Gamma · F1 stratifie par modèle.',
-    tag: 'Moyen terme',
+    title: 'Vision industrielle',
+    desc: 'Caméra haute résolution + CNN pour les défauts de sertissage et de marquage.',
+    tag: 'Qualité',
   },
   {
     n: '04',
-    title: 'Vision',
-    desc: 'Caméra + CV pour detecter les défauts de sertissage en sortie de machine.',
-    tag: 'Long terme',
+    title: 'Maintenance prescriptive',
+    desc: 'Proposer l’action, les pièces à commander et le meilleur créneau d’intervention.',
+    tag: 'Décision',
   },
 ];
 
@@ -47,7 +47,7 @@ export default function Perspectives() {
         className="slide-subtitle"
         style={{ marginBottom: 40 }}
       >
-        Quatre pistes concrètes, priorisées.
+        4 pistes issues des limites du projet.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>

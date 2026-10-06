@@ -11,6 +11,7 @@ export default function AnimatedCounter({
   suffix = '',
   className = '',
   style = {},
+  decimalComma = false,
 }) {
   const [display, setDisplay] = useState(from);
 
@@ -25,7 +26,7 @@ export default function AnimatedCounter({
   }, [from, to, duration, delay]);
 
   const formatted = decimals > 0
-    ? display.toFixed(decimals)
+    ? (decimalComma ? display.toFixed(decimals).replace('.', ',') : display.toFixed(decimals))
     : Math.round(display).toLocaleString('fr-FR').replace(/,/g, ' ');
 
   return (

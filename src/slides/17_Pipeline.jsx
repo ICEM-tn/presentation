@@ -7,7 +7,7 @@ export default function Pipeline() {
   return (
     <>
     <CircuitBackdrop opacity={0.28} accent="var(--cyan-400)" />
-    <Slide sectionLabel="05 · Pipeline temps réel">
+    <Slide sectionLabel="03 · Pipeline temps réel">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -24,16 +24,16 @@ export default function Pipeline() {
         className="slide-subtitle"
         style={{ marginBottom: 80 }}
       >
-        Cinq étapes · moins d'une minute · sans intervention humaine.
+        Cinq étapes · moins d'une seconde · sans intervention humaine.
       </motion.p>
 
       <PipelineFlow
         delayBase={0.4}
         steps={[
-          { icon: '📡', label: 'Capteur', hint: '5 sensors' },
-          { icon: '🖥', label: 'Raspberry', hint: 'agrégation 60s' },
+          { icon: '📡', label: 'Capteur', hint: '5 capteurs' },
+          { icon: '🖥', label: 'Raspberry', hint: 'mesure toutes les 60 s' },
           { icon: '⚙', label: 'Backend', hint: 'POST /ingest' },
-          { icon: '🧠', label: 'IA', hint: 'proba > 80 %' },
+          { icon: '🧠', label: 'IA', hint: 'seuils 60 % / 80 %' },
           { icon: '🔔', label: 'Alerte', hint: 'push Firebase' },
         ]}
       />
@@ -50,9 +50,9 @@ export default function Pipeline() {
         }}
       >
         {[
-          ['~60 s', 'Latence bout-en-bout', 'var(--cyan-400)'],
-          ['Automatique', 'Zéro action manuelle', 'var(--orange-400)'],
-          ['Terrain', 'Notification mobile', 'var(--green-400)'],
+          ['< 1 s', "De la mesure à l'alerte", 'var(--cyan-400)'],
+          ['< 35 ms', 'Inférence IA', 'var(--orange-400)'],
+          ['Automatique', 'Zéro action manuelle', 'var(--green-400)'],
         ].map(([v, k, c], i) => (
           <motion.div
             key={k}

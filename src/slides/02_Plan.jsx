@@ -12,29 +12,29 @@ const sections = [
     range: [2, 6],
   },
   {
-    n: '02', title: 'État de l\'art', hint: 'Scrum · matériels · stack',
+    n: '02', title: 'État de l\'art', hint: 'Scrum · capteurs · stack',
     icon: '📚', target: 7,
-    range: [7, 10],
+    range: [7, 13],
   },
   {
-    n: '03', title: 'Conception', hint: 'Architecture 5 couches · UML · Pipeline',
-    icon: '⚙', target: 11,
-    range: [11, 15],
+    n: '03', title: 'Conception', hint: 'Architecture · Pi · emplacement capteurs · UML · Pipeline',
+    icon: '⚙', target: 14,
+    range: [14, 23],
   },
   {
     n: '04', title: 'Développement', hint: 'Backend · IA · web · mobile · déploiement',
-    icon: '💻', target: 16,
-    range: [16, 28],
+    icon: '💻', target: 24,
+    range: [24, 37],
   },
   {
     n: '05', title: 'Démonstration', hint: 'Passage à la démo live',
-    icon: '▶', target: 29,
-    range: [29, 29],
+    icon: '▶', target: 38,
+    range: [38, 38],
   },
   {
-    n: '06', title: 'Résultats et conclusion', hint: 'KPI · perspectives · merci',
-    icon: '🎓', target: 30,
-    range: [30, 32],
+    n: '06', title: 'Résultats et conclusion', hint: 'KPI · conclusion · perspectives · merci',
+    icon: '🎓', target: 39,
+    range: [39, 42],
   },
 ];
 

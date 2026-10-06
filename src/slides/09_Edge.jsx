@@ -28,8 +28,8 @@ export default function Edge() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {[
-              ['Lecture', '1-Wire · I²C · GPIO'],
-              ['Agrégation', 'Fenêtres de 60s'],
+              ['Lecture', 'I²C · GPIO'],
+              ['Cadence', 'Mesure toutes les 60 s'],
               ['Envoi', 'HTTP POST /api/capteurs/ingest'],
               ['Autonomie', 'Systemd · redémarrage auto'],
             ].map(([k, v], i) => (

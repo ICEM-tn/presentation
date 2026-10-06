@@ -2,9 +2,9 @@ import { motion } from 'framer-motion';
 import Slide from '../components/Slide.jsx';
 
 const words = [
-  { fr: 'Prédire', desc: 'Modèles ML par cause', icon: '◆' },
-  { fr: 'Alerter', desc: 'Notifications mobile en temps réel', icon: '◇' },
-  { fr: 'Réduire', desc: 'Coût et arrêts de production', icon: '★' },
+  { fr: 'Instrumenter', desc: '2 machines · 4 familles de capteurs : température, vibration, thermique, courant', icon: '◆' },
+  { fr: 'Relier', desc: 'Chaîne complète : capteur → backend → IA → notification', icon: '◇' },
+  { fr: 'Livrer', desc: 'Web pour le responsable · mobile pour le technicien', icon: '★' },
 ];
 
 export default function Objectif() {
@@ -17,7 +17,7 @@ export default function Objectif() {
         className="slide-title"
         style={{ marginBottom: 12 }}
       >
-        Trois verbes.
+        Trois objectifs.
       </motion.h2>
 
       <motion.p

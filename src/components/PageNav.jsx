@@ -11,7 +11,8 @@ const THUMB_W = 138;
 const THUMB_H = 78;
 const SCALE = THUMB_W / THUMB_W_REAL;
 
-export default function PageNav({ currentIndex, goTo }) {
+// `embedded` : bande intégrée dans la fenêtre du texte oral (pas en position fixe).
+export default function PageNav({ currentIndex, goTo, embedded = false }) {
   const stripRef = useRef(null);
   const activeRef = useRef(null);
 
@@ -29,7 +30,7 @@ export default function PageNav({ currentIndex, goTo }) {
   const noop = () => {};
 
   return (
-    <div className="page-nav">
+    <div className={`page-nav ${embedded ? 'embedded' : ''}`}>
       <div className="page-nav-strip" ref={stripRef}>
         {slides.map((s, i) => {
           const Comp = s.component;

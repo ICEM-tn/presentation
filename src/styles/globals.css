@@ -97,6 +97,8 @@ img {
   justify-content: center;
   padding: 4vh 5vw;
 }
+/* Plein écran : plus de bande de vignettes, la slide prend toute la hauteur */
+.deck-root.fs .slide-viewport { height: 100vh; }
 
 .slide-inner {
   position: relative;
@@ -147,6 +149,26 @@ img {
 .slide-counter .total {
   color: var(--grey-500);
 }
+/* Plein écran : plus de bande de vignettes, le compteur descend dans le coin */
+.deck-root.fs .slide-counter { bottom: 18px; right: 22px; }
+
+/* Rappel temporaire (F11 / texte oral), disparaît après 4 s */
+.fs-tip {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(24, 37, 98, 0.85);
+  border: 1px solid rgba(255, 122, 26, 0.5);
+  color: var(--orange-400);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  z-index: 60;
+  pointer-events: none;
+  user-select: none;
+}
 
 .hint {
   position: fixed;
@@ -194,6 +216,17 @@ img {
   box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.6);
 }
 .page-nav-strip::-webkit-scrollbar { display: none; }
+
+/* Bande de vignettes dans la fenêtre du texte oral */
+.page-nav.embedded {
+  position: static;
+  min-width: 0; /* 43 vignettes : la bande défile, la fenêtre ne s'élargit pas */
+  height: auto;
+  padding: 0 24px 12px;
+  background: none;
+  pointer-events: auto;
+}
+.page-nav.embedded .page-nav-strip { box-shadow: none; }
 
 .thumb {
   flex-shrink: 0;
@@ -418,45 +451,14 @@ img {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Presenter launch button (main deck, bottom-right of counter)
-   ───────────────────────────────────────────────────────────── */
-.presenter-launch {
-  position: fixed;
-  bottom: 132px;
-  right: 24px;
-  z-index: 60;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: rgba(15, 10, 46, 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 122, 26, 0.45);
-  border-radius: 999px;
-  color: var(--orange-300, #ffb37a);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-}
-.presenter-launch:hover {
-  background: rgba(255, 122, 26, 0.14);
-  border-color: rgba(255, 122, 26, 0.75);
-  transform: translateY(-1px);
-}
-.presenter-launch svg { flex-shrink: 0; }
-
-/* ─────────────────────────────────────────────────────────────
    Presenter view (popout window : ?present=1)
    ───────────────────────────────────────────────────────────── */
 .presenter-root {
   position: fixed;
   inset: 0;
   display: grid;
-  grid-template-rows: 56px 1fr 56px;
+  grid-template-rows: 56px 1fr auto 56px;
+  grid-template-columns: minmax(0, 1fr);
   background: #0b0722;
   color: #e8e8f2;
   font-family: var(--font-body, 'Inter', system-ui, sans-serif);

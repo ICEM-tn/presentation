@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { slides } from './slides/index.js';
 import { getSpeechForIndex, getSpeechMode, setSpeechMode } from './speeches.js';
+import PageNav from './components/PageNav.jsx';
+import { createSync } from './sync.js';
 
-const CHANNEL = 'komax-deck';
 const SLIDE_W = 1600;
 const SLIDE_H = 900;
 const CURRENT_W = 560;
@@ -23,8 +24,17 @@ export default function PresenterView() {
   const [elapsed, setElapsed] = useState(0);
   const [fontSize, setFontSize] = useState(20);
   const [speechModeState, setSpeechModeState] = useState(() => getSpeechMode());
-  const chanRef = useRef(null);
-  const suppressBroadcast = useRef(false);
+  const indexRef = useRef(0);
+  const syncRef = useRef(null);
+
+  // Même logique que le deck : on n'envoie l'index que pour un changement local.
+  const show = useCallback((target, send = true) => {
+    const next = Math.max(0, Math.min(slides.length - 1, target));
+    if (next === indexRef.current) return;
+    indexRef.current = next;
+    setIndex(next);
+    if (send) syncRef.current?.send({ type: 'index', value: next });
+  }, []);
 
   const toggleSpeechMode = useCallback(() => {
     setSpeechModeState((prev) => {
@@ -35,32 +45,20 @@ export default function PresenterView() {
   }, []);
 
   useEffect(() => {
-    const chan = new BroadcastChannel(CHANNEL);
-    chanRef.current = chan;
-
-    chan.postMessage({ type: 'presenter-ready' });
-
-    chan.onmessage = (e) => {
-      const msg = e.data;
-      if (!msg) return;
-      if (msg.type === 'index') {
-        suppressBroadcast.current = true;
-        setIndex(msg.value);
-      } else if (msg.type === 'main-hello') {
-        chan.postMessage({ type: 'request-index' });
+    const sync = createSync(
+      () => window.opener,
+      (msg) => {
+        if (msg.type === 'index') {
+          show(msg.value, false);
+        } else if (msg.type === 'main-hello') {
+          sync.send({ type: 'request-index' });
+        }
       }
-    };
-
-    return () => chan.close();
-  }, []);
-
-  useEffect(() => {
-    if (suppressBroadcast.current) {
-      suppressBroadcast.current = false;
-      return;
-    }
-    chanRef.current?.postMessage({ type: 'index', value: index });
-  }, [index]);
+    );
+    syncRef.current = sync;
+    sync.send({ type: 'presenter-ready' });
+    return () => sync.close();
+  }, [show]);
 
   useEffect(() => {
     const t = setInterval(() => setClock(new Date()), 1000);
@@ -75,9 +73,7 @@ export default function PresenterView() {
     return () => clearInterval(t);
   }, [startedAt, pauseAccum, paused]);
 
-  const go = useCallback((delta) => {
-    setIndex((prev) => Math.max(0, Math.min(slides.length - 1, prev + delta)));
-  }, []);
+  const go = useCallback((delta) => show(indexRef.current + delta), [show]);
 
   const resetTimer = useCallback(() => {
     setStartedAt(Date.now());
@@ -259,12 +255,14 @@ export default function PresenterView() {
         </section>
       </main>
 
+      <PageNav currentIndex={index} goTo={show} embedded />
+
       <footer className="presenter-footer">
         <button className="foot-btn" onClick={() => go(-1)} disabled={index === 0}>
           ← Précédente
         </button>
         <div className="foot-hint">
-          ← → naviguer · P pause · R remise à zéro · +/− taille texte
+          ← → ou vignettes pour naviguer · P pause · R remise à zéro · +/− taille texte
         </div>
         <button
           className="foot-btn primary"

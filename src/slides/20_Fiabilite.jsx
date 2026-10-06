@@ -3,7 +3,7 @@ import Slide from '../components/Slide.jsx';
 
 export default function Fiabilité() {
   return (
-    <Slide sectionLabel="06 · Fiabilité">
+    <Slide sectionLabel="04 · Développement — Analyse de fiabilité">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -46,10 +46,10 @@ export default function Fiabilité() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {[
-            { icon: '📈', title: 'Disponibilité', desc: 'projetée sur 24 mois', delay: 0.55 },
-            { icon: '⚠', title: 'Nombre de pannes', desc: 'tendance et courbe', delay: 0.7 },
-            { icon: '📄', title: 'Export PDF', desc: 'signé · daté · logo ICEM', delay: 0.85 },
-            { icon: '🔮', title: 'Comparaison', desc: 'Alpha vs Gamma', delay: 1.0 },
+            { icon: '📈', title: 'Disponibilité', desc: 'projetée sur 3 mois · régression linéaire', delay: 0.55 },
+            { icon: '⚠', title: 'MTBF · MTTR · pannes', desc: 'calculés sur la période choisie', delay: 0.7 },
+            { icon: '📄', title: 'Rapport PDF', desc: 'généré par le backend · recommandation', delay: 0.85 },
+            { icon: '🔮', title: 'Comparaison', desc: 'Alpha 433 H vs Gamma 333 PC', delay: 1.0 },
           ].map((it) => (
             <motion.div
               key={it.title}
@@ -65,7 +65,7 @@ export default function Fiabilité() {
                 borderRadius: 8,
               }}
             >
-              <div style={{ fontSize: 26, opacity: 0.9 }}>{it.icon}</div>
+              <div style={{ fontSize: 26, opacity: 0.9, width: 34, textAlign: 'center', flexShrink: 0 }}>{it.icon}</div>
               <div>
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700 }}>{it.title}</div>
                 <div style={{ fontSize: 13, color: 'var(--grey-300)', marginTop: 2 }}>{it.desc}</div>

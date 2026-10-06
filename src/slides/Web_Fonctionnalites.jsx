@@ -2,12 +2,12 @@ import { motion } from 'framer-motion';
 import Slide from '../components/Slide.jsx';
 
 const features = [
-  { n: '01', title: 'Authentification JWT', hint: 'Rôles Responsable · Chef de Ligne · Technicien' },
-  { n: '02', title: 'Tableau de bord', hint: 'KPI MTBF · MTTR · disponibilité' },
-  { n: '03', title: 'Gestion des machines', hint: 'Fiche technique · historique · état' },
-  { n: '04', title: 'Interventions', hint: 'Création · suivi · badge IA' },
-  { n: '05', title: 'Planning et alertes', hint: 'Calendrier maintenance · notifications' },
-  { n: '06', title: 'Analyse de fiabilité', hint: 'Génération de rapport PDF' },
+  { n: '01', title: 'Connexion et tableau de bord', hint: 'JWT · MTBF · MTTR · disponibilité · interventions du mois' },
+  { n: '02', title: 'Équipements', hint: '13 machines · capteurs en direct (30 s)' },
+  { n: '03', title: 'Interventions et diagnostic IA', hint: "Tableau ou calendrier · « Diagnostiquer avec l'IA »" },
+  { n: '04', title: 'Maintenance préventive', hint: 'Checklists mensuelles · semestrielles · annuelles' },
+  { n: '05', title: 'Suivi journalier FOR MAI 52', hint: 'Contrôles de prise de poste par ligne' },
+  { n: '06', title: 'Fiabilité et alertes', hint: 'Rapport PDF · alertes triées par criticité' },
 ];
 
 export default function Web_Fonctionnalites() {
@@ -29,7 +29,7 @@ export default function Web_Fonctionnalites() {
         className="slide-subtitle"
         style={{ marginBottom: 32 }}
       >
-        Application React.js pour la supervision.
+        Application React.js · 3 profils : responsable · chef de ligne · technicien.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.15fr', gap: 40, alignItems: 'center', flex: 1 }}>

@@ -26,7 +26,7 @@ export default function BarChart({ bars, max = 1, unit = '', delayBase = 0.3 }) 
                 fontSize: 26,
                 color: b.highlight ? 'var(--orange-400)' : 'var(--white)',
               }}>
-                <AnimatedCounter to={b.value} decimals={b.decimals ?? 3} delay={delay} suffix={unit} />
+                <AnimatedCounter to={b.value} decimals={b.decimals ?? 3} delay={delay} suffix={unit} decimalComma={b.decimalComma} />
               </div>
             </div>
             <div style={{

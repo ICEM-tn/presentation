@@ -4,9 +4,10 @@ import AnimatedCounter from '../components/AnimatedCounter.jsx';
 import NetworkMesh from '../components/NetworkMesh.jsx';
 
 const models = [
-  { name: 'RF v1', role: 'Historique · zones', f1: 0.150, color: '#6879C9', delay: 0.4 },
-  { name: 'RF v2', role: 'IoT synthétique · causes', f1: 0.448, color: '#4ECDC4', delay: 0.6 },
-  { name: 'XGBoost v3', role: 'Probabilité · horizon 2 h', f1: 0.835, color: '#FF7A1A', delay: 0.8, best: true },
+  { name: 'RF v1', role: 'Historique ICEM · zone de panne', tag: 'Historique', metric: 'F1 macro', value: 0.15, color: '#6879C9', delay: 0.4 },
+  { name: 'RF v2', role: 'Capteurs IoT · 13 causes physiques', tag: 'Temps réel · cause', metric: 'F1 macro', value: 0.45, color: '#4ECDC4', delay: 0.55 },
+  { name: 'XGBoost v3', role: 'Probabilité de panne · fenêtre 2 h', tag: 'Temps réel · probabilité', metric: 'F1 binaire', value: 0.84, color: '#FF7A1A', delay: 0.7 },
+  { name: 'Régression linéaire', role: 'Fiabilité · projection 3 mois', tag: 'Fiabilité', metric: 'R² test', value: 0.79, color: '#B388FF', delay: 0.85 },
 ];
 
 export default function IA() {
@@ -21,7 +22,7 @@ export default function IA() {
         className="slide-title"
         style={{ marginBottom: 12 }}
       >
-        Trois modèles ML.
+        Quatre modèles ML.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -33,7 +34,7 @@ export default function IA() {
         Un microservice FastAPI · scikit-learn + XGBoost.
       </motion.p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 18 }}>
         {models.map((m) => (
           <motion.div
             key={m.name}
@@ -42,46 +43,40 @@ export default function IA() {
             transition={{ duration: 0.85, delay: m.delay, ease: [0.16, 1, 0.3, 1] }}
             style={{
               padding: 24,
-              background: m.best
-                ? `linear-gradient(180deg, ${m.color}22, ${m.color}06)`
-                : `linear-gradient(180deg, rgba(24, 37, 98, 0.5), rgba(10, 18, 48, 0.5))`,
-              border: `1px solid ${m.best ? m.color + '80' : 'rgba(104, 121, 201, 0.25)'}`,
+              background: `linear-gradient(180deg, ${m.color}1A, rgba(10, 18, 48, 0.5))`,
+              border: `1px solid ${m.color}55`,
               borderRadius: 16,
               display: 'flex',
               flexDirection: 'column',
               gap: 16,
               position: 'relative',
               overflow: 'hidden',
-              boxShadow: m.best ? `0 20px 60px -20px ${m.color}80` : 'none',
             }}
           >
-            {m.best && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: m.delay + 0.4 }}
-                style={{
-                  position: 'absolute',
-                  top: 12,
-                  right: 12,
-                  padding: '3px 8px',
-                  background: m.color,
-                  color: 'var(--navy-950)',
-                  fontSize: 10,
-                  fontWeight: 700,
-                  borderRadius: 4,
-                  letterSpacing: '0.05em',
-                  fontFamily: 'var(--font-mono)',
-                }}
-              >
-                RETENU
-              </motion.div>
-            )}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: m.delay + 0.4 }}
+              style={{
+                alignSelf: 'flex-start',
+                padding: '3px 8px',
+                background: m.color,
+                color: 'var(--navy-950)',
+                fontSize: 10,
+                fontWeight: 700,
+                borderRadius: 4,
+                letterSpacing: '0.05em',
+                fontFamily: 'var(--font-mono)',
+                textTransform: 'uppercase',
+              }}
+            >
+              {m.tag}
+            </motion.div>
 
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: m.color, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
               Modèle
             </div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 800, lineHeight: 1 }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: m.name.length > 12 ? 24 : 30, fontWeight: 800, lineHeight: 1 }}>
               {m.name}
             </div>
             <div style={{ fontSize: 13, color: 'var(--grey-300)' }}>
@@ -90,10 +85,10 @@ export default function IA() {
 
             <div style={{ marginTop: 'auto', paddingTop: 20, borderTop: '1px solid rgba(104, 121, 201, 0.2)' }}>
               <div style={{ fontSize: 11, color: 'var(--grey-500)', fontFamily: 'var(--font-mono)', marginBottom: 4 }}>
-                F1-score (macro)
+                {m.metric}
               </div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 44, fontWeight: 800, color: m.color, lineHeight: 1 }}>
-                <AnimatedCounter to={m.f1} decimals={3} delay={m.delay + 0.4} duration={1.4} />
+                <AnimatedCounter to={m.value} decimals={2} decimalComma delay={m.delay + 0.4} duration={1.4} />
               </div>
             </div>
           </motion.div>
@@ -114,7 +109,7 @@ export default function IA() {
           fontSize: 14,
         }}
       >
-        Seuil <strong style={{ color: 'var(--orange-400)' }}>80 %</strong> ⇒ création automatique d'une maintenance prédictive.
+        Seuil <strong style={{ color: 'var(--orange-400)' }}>60 %</strong> → alerte · <strong style={{ color: 'var(--orange-400)' }}>80 %</strong> → alerte critique + maintenance prédictive
       </motion.div>
     </Slide>
     </>

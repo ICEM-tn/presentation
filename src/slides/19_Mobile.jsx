@@ -4,13 +4,13 @@ import Slide from '../components/Slide.jsx';
 const phones = [
   { src: 'img/flutter/dashboard_flutter.png', label: 'Tableau de bord' },
   { src: 'img/flutter/interventions_flutter.png', label: 'Interventions' },
-  { src: 'img/flutter/notifications_flutter.png', label: 'Alertes push' },
-  { src: 'img/flutter/preventive_checklists_flutter.png', label: 'Checklists' },
+  { src: 'img/flutter/diagnostic_ia_flutter.png', label: 'Diagnostic IA' },
+  { src: 'img/flutter/notifications_flutter.png', label: 'Alertes' },
 ];
 
 export default function Mobile() {
   return (
-    <Slide sectionLabel="05 · Application Mobile">
+    <Slide sectionLabel="04 · Développement — Application mobile">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -27,7 +27,7 @@ export default function Mobile() {
         className="slide-subtitle"
         style={{ marginBottom: 40 }}
       >
-        Le technicien reçoit une alerte en 60 secondes.
+        Captures réelles · Flutter sur Android.
       </motion.p>
 
       <div style={{
@@ -101,7 +101,7 @@ export default function Mobile() {
           justifyContent: 'center',
         }}
       >
-        {['Flutter · Android', 'Firebase (notifications)', 'Preuve photo OK/NOK', 'Brouillon hors-ligne'].map((t) => (
+        {['Flutter · Android', 'Firebase (notifications push)', 'Preuve photo OK/NOK', 'Diagnostic IA sur le terrain'].map((t) => (
           <span key={t} className="pill">{t}</span>
         ))}
       </motion.div>

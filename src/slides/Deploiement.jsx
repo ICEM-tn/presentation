@@ -2,11 +2,11 @@ import { motion } from 'framer-motion';
 import Slide from '../components/Slide.jsx';
 
 const steps = [
-  { n: '01', label: 'Serveur local Windows', hint: 'Réseau interne ICEM' },
-  { n: '02', label: 'Backend Express.js', hint: 'PM2 · port 3000' },
-  { n: '03', label: 'MongoDB local', hint: 'Base métier centralisée' },
-  { n: '04', label: 'Microservices FastAPI', hint: 'Uvicorn · port 8001' },
-  { n: '05', label: 'App web + mobile', hint: 'Accès LAN sur postes utilisateurs' },
+  { n: '01', label: 'Windows Server ICEM', hint: 'Réseau interne · adresse IP privée' },
+  { n: '02', label: 'Backend Express.js', hint: 'Service Windows via NSSM' },
+  { n: '03', label: 'Frontend React', hint: 'IIS · reverse proxy' },
+  { n: '04', label: 'MongoDB locale', hint: 'Port 27017 · sous-réseau interne · SCRAM' },
+  { n: '05', label: 'Microservice FastAPI', hint: 'Uvicorn · port 8001' },
 ];
 
 export default function Deploiement() {
@@ -28,7 +28,7 @@ export default function Deploiement() {
         className="slide-subtitle"
         style={{ marginBottom: 32 }}
       >
-        Réseau interne ICEM — pas de cloud, données restent sur site.
+        Réseau interne ICEM · données sur site · seul flux sortant : notifications Firebase.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 32, flex: 1 }}>
@@ -61,21 +61,19 @@ export default function Deploiement() {
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ffbd2e' }} />
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#27c93f' }} />
             <span style={{ marginLeft: 12, color: 'var(--grey-500)', fontSize: 11, letterSpacing: '0.12em' }}>
-              icem@server ~ · PowerShell
+              ICEM\komax-server · PowerShell
             </span>
           </div>
           <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
-            <TerminalLine delay={0.7} prompt="PS> " text="pm2 start ecosystem.config.js" color="var(--cyan-400)" />
-            <TerminalLine delay={1.0} text="[PM2] Starting backend-express..." color="var(--grey-500)" />
-            <TerminalLine delay={1.2} text="[PM2] Starting fastapi-uvicorn..." color="var(--grey-500)" />
-            <TerminalLine delay={1.4} text="┌────────────────┬────┬────────┬────────┐" color="var(--grey-500)" />
-            <TerminalLine delay={1.5} text="│ name           │ id │ status │ mem    │" color="var(--grey-500)" />
-            <TerminalLine delay={1.6} text="├────────────────┼────┼────────┼────────┤" color="var(--grey-500)" />
-            <TerminalLine delay={1.7} text="│ backend-express│ 0  │ online │ 82.4mb │" color="var(--green-400)" />
-            <TerminalLine delay={1.8} text="│ fastapi-uvicorn│ 1  │ online │ 94.1mb │" color="var(--green-400)" />
-            <TerminalLine delay={1.9} text="└────────────────┴────┴────────┴────────┘" color="var(--grey-500)" />
-            <TerminalLine delay={2.15} prompt="PS> " text="curl http://localhost:3000/health" color="var(--cyan-400)" />
-            <TerminalLine delay={2.4} text='{"status":"ok","db":"connected"}' color="var(--orange-400)" />
+            <TerminalLine delay={0.7} prompt="PS> " text="Get-Service komax-*" color="var(--cyan-400)" />
+            <TerminalLine delay={1.0} text="Status    Name              DisplayName" color="var(--grey-500)" />
+            <TerminalLine delay={1.1} text="------    ----              -----------" color="var(--grey-500)" />
+            <TerminalLine delay={1.3} text="Running   komax-backend     Komax GMAO · Express (NSSM)" color="var(--green-400)" />
+            <TerminalLine delay={1.5} text="Running   komax-fastapi     Komax IA · FastAPI (Uvicorn :8001)" color="var(--green-400)" />
+            <TerminalLine delay={1.7} text="Running   MongoDB           MongoDB Server (komax_gmao)" color="var(--green-400)" />
+            <TerminalLine delay={1.9} text="Running   W3SVC             IIS · reverse proxy" color="var(--green-400)" />
+            <TerminalLine delay={2.15} prompt="PS> " text="curl http://192.168.10.20/api/health" color="var(--cyan-400)" />
+            <TerminalLine delay={2.4} text='{"status":"ok","message":"Komax GMAO API opérationnelle"}' color="var(--orange-400)" />
           </div>
         </motion.div>
 
@@ -131,7 +129,7 @@ function TerminalLine({ delay, prompt = '', text, color = 'var(--navy-100)' }) {
       style={{ display: 'flex', gap: 6 }}
     >
       {prompt && <span style={{ color: 'var(--orange-400)' }}>{prompt}</span>}
-      <span style={{ color }}>{text}</span>
+      <span style={{ color, whiteSpace: 'pre' }}>{text}</span>
     </motion.div>
   );
 }

@@ -2,11 +2,12 @@ import { motion } from 'framer-motion';
 import Slide from '../components/Slide.jsx';
 
 const phases = [
-  { n: '01', title: 'Backlog produit', hint: 'Besoins ICEM · exigences fonctionnelles' },
-  { n: '02', title: 'Sprints', hint: '2 à 4 semaines · itératif' },
-  { n: '03', title: 'Daily stand-up', hint: '10 min · état d’avancement' },
-  { n: '04', title: 'Revue de sprint', hint: 'Livrable présenté à l’encadreur' },
-  { n: '05', title: 'Rétrospective', hint: 'Améliorer le cycle suivant' },
+  { n: 'S1', title: 'Authentification & comptes', hint: 'Inscription · connexion JWT · rôles' },
+  { n: 'S2', title: 'Machines & parc', hint: 'Liste · détails · historique pannes' },
+  { n: 'S3', title: 'Maintenance & interventions', hint: 'Préventif · signalement · photos' },
+  { n: 'S4', title: 'Surveillance IoT', hint: 'Capteurs · suivi journalier' },
+  { n: 'S5', title: 'IA & alertes', hint: 'Classification · probabilité · push' },
+  { n: 'S6', title: 'Fiabilité & recommandation', hint: 'MTBF · MTTR · rapport PDF' },
 ];
 
 export default function Scrum() {
@@ -28,7 +29,7 @@ export default function Scrum() {
         className="slide-subtitle"
         style={{ marginBottom: 40 }}
       >
-        Cycle itératif adopté pendant les 6 mois du stage.
+        Six sprints découpés par cas d’utilisation — mars à août 2026.
       </motion.p>
 
       {/* Circular loop diagram */}
@@ -62,7 +63,7 @@ export default function Scrum() {
             })}
             {/* Center label */}
             <motion.text
-              x="200" y="195"
+              x="200" y="185"
               textAnchor="middle"
               fill="var(--cyan-400)"
               fontFamily="var(--font-mono)"
@@ -72,37 +73,49 @@ export default function Scrum() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.5 }}
             >
-              SPRINT
+              SCRUM
             </motion.text>
             <motion.text
-              x="200" y="220"
+              x="200" y="215"
               textAnchor="middle"
               fill="var(--orange-400)"
               fontFamily="var(--font-display)"
-              fontSize="24"
-              fontWeight="700"
+              fontSize="28"
+              fontWeight="800"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.7 }}
             >
-              2 à 4 sem.
+              6 sprints
+            </motion.text>
+            <motion.text
+              x="200" y="238"
+              textAnchor="middle"
+              fill="var(--grey-500)"
+              fontFamily="var(--font-mono)"
+              fontSize="11"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1.9 }}
+            >
+              mars → août 2026
             </motion.text>
           </svg>
         </div>
 
-        {/* Phase list */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {/* Sprint list */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {phases.map((p, i) => (
             <motion.div
               key={p.n}
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 + i * 0.1 }}
+              transition={{ duration: 0.6, delay: 0.6 + i * 0.08 }}
               style={{
                 display: 'flex',
-                gap: 16,
+                gap: 14,
                 alignItems: 'center',
-                padding: '12px 16px',
+                padding: '9px 14px',
                 background: 'linear-gradient(90deg, rgba(255, 122, 26, 0.08), transparent)',
                 borderLeft: '3px solid var(--orange-400)',
                 borderRadius: '0 10px 10px 0',
@@ -110,7 +123,7 @@ export default function Scrum() {
             >
               <div style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: 20,
+                fontSize: 17,
                 fontWeight: 700,
                 color: 'var(--orange-400)',
                 minWidth: 32,
@@ -118,10 +131,10 @@ export default function Scrum() {
                 {p.n}
               </div>
               <div>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 600 }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600 }}>
                   {p.title}
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--grey-500)', marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: 'var(--grey-500)', marginTop: 2 }}>
                   {p.hint}
                 </div>
               </div>

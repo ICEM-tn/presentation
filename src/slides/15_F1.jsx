@@ -4,7 +4,7 @@ import BarChart from '../components/BarChart.jsx';
 
 export default function F1() {
   return (
-    <Slide sectionLabel="04 · Resultats">
+    <Slide sectionLabel="04 · Validation">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -21,7 +21,7 @@ export default function F1() {
         className="slide-subtitle"
         style={{ marginBottom: 40 }}
       >
-        XGBoost gagne · l'écart n'est pas anodin.
+        3 modèles · 3 tâches différentes · 1 score par tâche.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 48, alignItems: 'center' }}>
@@ -30,9 +30,9 @@ export default function F1() {
             max={1}
             delayBase={0.45}
             bars={[
-              { label: 'RF v1', value: 0.150, hint: 'historique · zones', decimals: 3 },
-              { label: 'RF v2', value: 0.448, hint: 'IoT · causes', decimals: 3 },
-              { label: 'XGBoost v3', value: 0.835, hint: 'proba · 2 h', decimals: 3, highlight: true },
+              { label: 'RF v1', value: 0.15, hint: 'zones · historique ICEM · F1 macro', decimals: 2, decimalComma: true },
+              { label: 'RF v2', value: 0.45, hint: '13 causes + normale · F1 macro', decimals: 2, decimalComma: true },
+              { label: 'XGBoost v3', value: 0.84, hint: 'dérive à 2 h · F1 binaire', decimals: 2, decimalComma: true, highlight: true },
             ]}
           />
         </div>
@@ -52,13 +52,13 @@ export default function F1() {
           }}
         >
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--orange-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-            Pourquoi XGBoost
+            XGBoost · alerte automatique
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
-              ['Gradient boosting', 'apprend les erreurs séquentiellement'],
-              ['Robuste au déséquilibre', 'F1 macro > accuracy'],
-              ['Rapide en inférence', '~15 ms par prédiction'],
+              ['Gradient boosting', 'précis sur un problème binaire déséquilibré'],
+              ['Cible : dérive dans 2 h', 'sans C08 · C09 · C13 (aucune signature)'],
+              ['Rapide en inférence', '12 ms en moyenne · 24 ms p95'],
             ].map(([k, v], i) => (
               <motion.div
                 key={k}

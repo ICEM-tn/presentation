@@ -21,7 +21,7 @@ export default function Dataset() {
         className="slide-subtitle"
         style={{ marginBottom: 40 }}
       >
-        Historique réel · signaux synthétiques ancres physiquement.
+        Historique réel · signaux synthétiques ancrés physiquement.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 32, alignItems: 'center' }}>
@@ -51,9 +51,9 @@ export default function Dataset() {
           delay={0.6}
           label="Synthétique IoT"
           value={64800}
-          unit="lignes 1 min"
-          hint="Physique + FMEA · 13 causes"
-          badges={['DHT · MPU · AMG · STC', 'ISO 10816', 'AM2302'].slice(0, 2)}
+          unit="lignes · 1 toutes les 5 min"
+          hint="Signature physique par cause"
+          badges={['DHT · MPU · AMG · SCT', '13 causes']}
           highlight
         />
       </div>
@@ -77,7 +77,7 @@ export default function Dataset() {
         <div style={{ fontSize: 24, color: 'var(--cyan-400)' }}>◈</div>
         <div>
           <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Découpage stratifié</div>
-          <div style={{ fontSize: 13, color: 'var(--grey-300)' }}>80 % entraînement · 20 % test · shuffle par cause</div>
+          <div style={{ fontSize: 13, color: 'var(--grey-300)' }}>80 % entraînement · 20 % test · SMOTE sur l'entraînement seulement</div>
         </div>
         <div style={{
           fontFamily: 'var(--font-display)',
@@ -86,6 +86,7 @@ export default function Dataset() {
           color: 'var(--cyan-400)',
         }}>
           <AnimatedCounter to={12960} delay={1.2} />
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 400, color: 'var(--grey-500)', textAlign: 'right' }}>lignes de test</div>
         </div>
       </motion.div>
     </Slide>

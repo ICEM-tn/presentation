@@ -2,11 +2,11 @@ import { motion } from 'framer-motion';
 import Slide from '../components/Slide.jsx';
 
 const endpoints = [
-  { method: 'POST', path: '/api/capteurs/ingest', role: 'Ingestion IoT' },
+  { method: 'POST', path: '/api/auth/login', role: 'Connexion JWT' },
   { method: 'GET', path: '/api/machines', role: 'Liste machines' },
-  { method: 'POST', path: '/api/interventions', role: 'Créer intervention' },
+  { method: 'POST', path: '/api/maintenances', role: 'Créer intervention' },
   { method: 'GET', path: '/api/alertes', role: 'Alertes actives' },
-  { method: 'POST', path: '/api/auth/login', role: 'Auth JWT' },
+  { method: 'POST', path: '/api/capteurs/ingest', role: 'Ingestion IoT' },
 ];
 
 const methodColors = {
@@ -35,7 +35,7 @@ export default function Backend() {
         className="slide-subtitle"
         style={{ marginBottom: 32 }}
       >
-        API REST · 8 collections · trois rôles.
+        API REST · 9 collections principales · 3 rôles.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
@@ -103,10 +103,10 @@ export default function Backend() {
 
           <div style={{ borderTop: '1px solid rgba(104, 121, 201, 0.2)', paddingTop: 16 }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--grey-500)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>
-              8 collections MongoDB
+              9 collections principales
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
-              {['User', 'Machine', 'Capteur', 'Intervention', 'Alerte', 'Maintenance', 'AnalyseTCO', 'PreventiveChecklist'].map((c, i) => (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+              {['Utilisateur', 'Ligne', 'Machine', 'Maintenance', 'Alerte', 'Capteur', 'RaspberryPi', 'AnalyseIA', 'AnalyseTCO'].map((c, i) => (
                 <motion.div
                   key={c}
                   initial={{ opacity: 0 }}
