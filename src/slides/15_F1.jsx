@@ -12,7 +12,7 @@ export default function F1() {
         className="slide-title"
         style={{ marginBottom: 12 }}
       >
-        F1 par modèle.
+        F1 par cause.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -21,7 +21,7 @@ export default function F1() {
         className="slide-subtitle"
         style={{ marginBottom: 40 }}
       >
-        3 modèles · 3 tâches différentes · 1 score par tâche.
+        Random Forest · validation par semaines · F1 macro 0,85.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 48, alignItems: 'center' }}>
@@ -30,9 +30,11 @@ export default function F1() {
             max={1}
             delayBase={0.45}
             bars={[
-              { label: 'RF v1', value: 0.15, hint: 'zones · historique ICEM · F1 macro', decimals: 2, decimalComma: true },
-              { label: 'RF v2', value: 0.45, hint: '13 causes + normale · F1 macro', decimals: 2, decimalComma: true },
-              { label: 'XGBoost v3', value: 0.84, hint: 'dérive à 2 h · F1 binaire', decimals: 2, decimalComma: true, highlight: true },
+              { label: 'C05', value: 0.95, hint: 'surchauffe armoire', decimals: 2, decimalComma: true, highlight: true },
+              { label: 'C03', value: 0.89, hint: 'ventilation moteur encrassée', decimals: 2, decimalComma: true },
+              { label: 'C02', value: 0.85, hint: 'courroie détendue', decimals: 2, decimalComma: true },
+              { label: 'C04', value: 0.74, hint: 'surcharge moteur', decimals: 2, decimalComma: true },
+              { label: 'C01', value: 0.67, hint: 'usure mécanique · lente', decimals: 2, decimalComma: true },
             ]}
           />
         </div>
@@ -52,13 +54,13 @@ export default function F1() {
           }}
         >
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--orange-400)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-            XGBoost · alerte automatique
+            Random Forest · diagnostic
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
-              ['Gradient boosting', 'précis sur un problème binaire déséquilibré'],
-              ['Cible : dérive dans 2 h', 'sans C08 · C09 · C13 (aucune signature)'],
-              ['Rapide en inférence', '12 ms en moyenne · 24 ms p95'],
+              ['Précision 0,80 à 0,99', 'quand il annonce une cause, il a presque toujours raison'],
+              ['Erreurs logiques', 'surtout « Normal » au début d’une panne, encore trop faible'],
+              ['Rapide', '61 ms par analyse · 2 h de mesures'],
             ].map(([k, v], i) => (
               <motion.div
                 key={k}

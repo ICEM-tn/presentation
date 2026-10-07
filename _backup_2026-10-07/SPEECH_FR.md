@@ -1,0 +1,288 @@
+﻿# Script oral — soutenance PFE (deck React, 43 slides)
+
+**Étudiant** : Moutia Bensaad — Mastère 2 Systèmes Embarqués et Mobile, ISET Nabeul
+**Encadreurs** : Imed Hidri (académique) · Yassine Hammami (société)
+**Sujet** : Maintenance prédictive intelligente — Komax Alpha 433 H et Gamma 333 PC
+**Cible orale** : ~25 min (43 slides ; contenu ~42 s/slide, dividers 5 s, Cover 45 s, Plan 30 s)
+
+**Règles orales** :
+- Français A2/B1, phrases courtes, zéro anglais mixé (sauf IoT, API, ML, JSON)
+- Alterner *on / nous / impersonnel* pour éviter le ton IA
+- Toujours **Alpha 433 H avant Gamma 333 PC**
+- Vocabulaire supervision : *interface opérateur*, *console*, *supervision* — jamais *grafcet, automate, PLC, ladder*
+- Chaque notion technique ancrée à Komax en une phrase
+
+---
+
+## 1 — Cover (45 s)
+
+> Bonjour à tous. Je m'appelle Moutia Bensaad, étudiant en Mastère 2 Systèmes Embarqués et Mobile à l'ISET Nabeul. J'ai réalisé ce projet de fin d'études au sein d'ICEM Nabeul, sous l'encadrement académique de Monsieur Imed Hidri et l'encadrement société de Monsieur Yassine Hammami. Mon sujet porte sur une plateforme de **maintenance prédictive intelligente** appliquée à 2 machines de câblage : la Komax Alpha 433 H et la Gamma 333 PC. L'idée : instrumenter ces machines avec des capteurs, remonter les données via une Raspberry Pi, entraîner un modèle qui anticipe les pannes, puis restituer les alertes sur une interface web et mobile. Je vous propose maintenant le plan de la présentation.
+
+---
+
+## 2 — Plan de la présentation (30 s)
+
+> La présentation s'articule en 6 sections. D'abord l'introduction et le contexte industriel chez ICEM. Ensuite l'état de l'art — méthodologie, matériel, briques logicielles. Puis la conception : architecture 5 couches et modélisation UML. Le développement occupe la partie la plus dense — backend, intelligence artificielle, web, mobile, déploiement. Une courte démonstration live suivra. Et nous conclurons sur les résultats mesurés et les perspectives.
+
+---
+
+## 3 — Section 1 · Introduction et contexte (5 s)
+
+> Commençons par le contexte industriel.
+
+---
+
+## 4 — ICEM Nabeul (40 s)
+
+> ICEM est une filiale du groupe Coficab, spécialisée dans la production de faisceaux électriques pour l'industrie automobile. L'usine de Nabeul emploie plusieurs centaines de personnes et produit chaque jour des milliers de sous-ensembles câblés. Le parc machine repose principalement sur des équipements Komax, qui coupent, dénudent et sertissent le fil à grande cadence. Toute panne sur ces machines interrompt une ligne entière et impacte directement le rendement. C'est dans cet environnement que le besoin de maintenance prédictive a émergé. 2 machines concentrent ce besoin.
+
+---
+
+## 5 — Machines Alpha 433 H et Gamma 333 PC (50 s)
+
+> 2 machines sont ciblées par le projet. **La Komax Alpha 433 H** — une machine d'entrée de gamme, 4 postes, cadence moyenne, 6 moteurs pas-à-pas et un cycle en 7 étapes : dévidage, mesure, coupe, dénudage, transfert, sertissage, éjection. **La Gamma 333 PC**, plus haut de gamme — automate compact, unité de sertissage double, entraînement par courroies crantées à tension calibrée. Sur les 2 machines, on retrouve les mêmes zones critiques : la tête de coupe, les courroies, les capteurs de position et l'armoire électrique. Une analyse historique de 1 467 interventions ICEM sur 5 ans nous a permis de hiérarchiser ces zones. Reste à comprendre pourquoi la maintenance actuelle ne suffit pas.
+
+---
+
+## 6 — Problématique (45 s)
+
+> Aujourd'hui, la maintenance chez ICEM est majoritairement **corrective** — on répare après la panne — ou **préventive systématique** — on remplace à intervalle fixe. Les 2 approches présentent des limites : la corrective coûte cher en arrêt de production, la préventive systématique gaspille des pièces encore fonctionnelles. L'objectif de la maintenance prédictive est d'intervenir *au bon moment*, à partir de signaux mesurés en continu. Sans instrumentation, cet objectif est hors d'atteinte. Le projet vise justement à fournir cette instrumentation, la chaîne de traitement associée et les interfaces métier. De ce constat naissent 3 objectifs mesurables.
+
+---
+
+## 7 — Objectifs (40 s)
+
+> Trois objectifs mesurables ont été fixés. Premier : instrumenter les 2 machines avec 4 familles de capteurs — température, vibration, thermique matricielle, courant. Deuxième : construire une chaîne complète de la donnée, du capteur jusqu'à la notification opérateur, en passant par le backend et le microservice d'intelligence artificielle. Troisième : livrer 2 interfaces — une application web pour les responsables de maintenance, une application mobile pour les techniciens sur le terrain. Un microservice de fiabilité complète l'ensemble pour l'aide à la décision d'investissement.
+
+---
+
+## 8 — Section 2 · État de l'art (5 s)
+
+> Passons à l'état de l'art et aux choix technologiques.
+
+---
+
+## 9 — Méthodologie Scrum (35 s)
+
+> Le projet s'étale sur 6 mois, de mars à août 2026. Nous avons adopté la méthodologie **Scrum**, découpée en 6 sprints organisés par cas d'utilisation. Sprint 1 : authentification et gestion des comptes. Sprint 2 : gestion des machines et consultation du parc. Sprint 3 : maintenance et interventions. Sprint 4 : surveillance temps réel et collecte des données capteurs — c'est ce sprint qui a livré la couche capteurs que nous détaillons dans les prochaines slides. Sprint 5 : analyse des pannes, alertes et notifications. Sprint 6 : analyse de fiabilité et recommandation. Chaque sprint est validé par une revue avec l'encadreur et alimente le backlog du sprint suivant. Nous ouvrons donc directement sur le sprint 4 — les 4 types de capteurs choisis, un par un.
+
+---
+
+## 10 — DHT22 · caractéristiques (40 s)
+
+> Le premier capteur est le **DHT22**, une sonde numérique de température à contact. Ses caractéristiques : plage de mesure de **-40 à +80 degrés**, précision de plus ou moins un **demi-degré**, sortie numérique sur un seul fil de données (single-wire, distinct du bus 1-Wire), sans conversion analogique. Il fournit également l'humidité relative en bonus. Son coût unitaire tourne autour de **3 euros**. Pourquoi ce choix ? Le moteur électrique chauffe systématiquement avant de tomber en panne — c'est le premier symptôme d'un roulement fatigué ou d'un bobinage en souffrance. Le DHT22 capte ce signal très tôt, avec une intégration triviale et une robustesse éprouvée.
+
+---
+
+## 11 — MPU-6050 · caractéristiques (40 s)
+
+> Le deuxième capteur est le **MPU-6050**, un accéléromètre 3 axes couplé à un gyroscope 3 axes. Sa plage de mesure est réglable de plus ou moins **2 g à 16 g**, avec une fréquence d'échantillonnage pouvant atteindre un kilohertz. Il communique par bus I²C, sous alimentation 3 à 5 volts. Pourquoi ce composant ? C'est un standard très documenté, avec un excellent rapport qualité-prix — environ 4 euros. Les 3 axes fournissent une signature vibratoire riche, exploitable pour distinguer 2 causes physiques distinctes : une courroie détendue produit un pic basse fréquence, tandis qu'un roulement usé donne une signature harmonique haute fréquence.
+
+---
+
+## 12 — AMG8833 · caractéristiques (45 s)
+
+> Le troisième capteur est l'**AMG8833**, une caméra thermique matricielle sans contact. Elle produit une image de chaleur en **8 par 8 pixels** — soit 64 points de mesure — sur une plage de **-20 à +80 degrés**, avec un champ de vue de **60 degrés par 60 degrés** et un rafraîchissement de 10 hertz. Elle communique par I²C. Pourquoi ce capteur ? 2 raisons : d'abord une vision globale de la zone chaude sans aucun contact mécanique avec les organes en mouvement ; ensuite, sa faible résolution reste largement suffisante pour cartographier les points chauds. C'est une alternative très accessible aux caméras thermiques industrielles type FLIR, dont le prix dépasse aisément 500 euros — l'AMG8833 coûte environ **30 euros**.
+
+---
+
+## 13 — SCT-013 · caractéristiques (45 s)
+
+> Le quatrième capteur est la **pince ampèremétrique SCT-013**, dans sa variante **SCT-013-000**. Ses caractéristiques : plage 0 à 100 ampères alternatif, sortie en courant de 0 à 50 milliampères convertie en tension par une résistance de charge de 33 ohms, précision de plus ou moins **1 %**, et lecture aux fréquences secteur 50 ou 60 hertz. Le signal analogique est numérisé par un convertisseur externe **ADS1015 12 bits**, connecté au Raspberry Pi par I²C. Pourquoi ce choix ? La pince est **non-invasive** — on la clippe simplement autour du câble, sans le couper. Or le courant total de l'armoire reflète l'état mécanique agrégé de tous les moteurs : une surintensité soudaine signale une contrainte cachée, un moteur qui force ou un début de blocage. Ces 4 types de capteurs s'appuient sur une pile logicielle en 3 couches.
+
+---
+
+## 14 — Stack technique (35 s)
+
+> 3 briques logicielles principales. Côté **backend** : Node.js avec Express, MongoDB via Mongoose, authentification JWT. Côté **intelligence artificielle** : Python avec FastAPI, scikit-learn pour les modèles Random Forest, XGBoost pour la classification fine des causes. Côté **frontend** : React.js pour l'interface web des responsables, Flutter pour l'application mobile des techniciens, et Firebase Cloud Messaging pour les notifications push. L'ensemble est déployé sur le serveur interne d'ICEM, sans exposition cloud. Voyons comment ces briques s'articulent dans une architecture cohérente.
+
+---
+
+## 15 — Section 3 · Conception (5 s)
+
+> Voici la conception architecturale.
+
+---
+
+## 16 — Architecture 5 couches (50 s)
+
+> Notre architecture repose sur **5 couches**, empilées du terrain vers l'utilisateur. **Perception** : les 5 capteurs installés sur la machine — 2 DHT22, un MPU-6050, un AMG8833 et une pince SCT-013. **Edge** : la Raspberry Pi 4, passerelle locale qui lit les capteurs en I²C et GPIO, prétraite les mesures et les envoie au serveur en HTTP POST JSON, toutes les 60 secondes. **Backend** : le serveur Node.js avec Express et MongoDB, qui expose l'API REST, gère l'authentification JWT et stocke toutes les données. **Intelligence** : un microservice FastAPI avec 2 modules — Random Forest et XGBoost pour la maintenance prédictive, régression linéaire pour la fiabilité — appelés par le backend en REST. **Application** : l'interface web React et l'application mobile Flutter, qui reçoivent les alertes en push. Chaque couche a un rôle précis : on peut remplacer un capteur ou ré-entraîner un modèle sans toucher aux autres couches. Zoomons d'abord sur la couche Edge — la Raspberry Pi.
+
+---
+
+## 17 — Passerelle Edge (Raspberry Pi) (40 s)
+
+> La Raspberry Pi joue le rôle de passerelle terrain. Elle centralise les **5 capteurs** : le MPU-6050, l'AMG8833 et le convertisseur ADS1015 de la pince SCT-013 partagent le même bus I2C, et les 2 DHT22 utilisent chacun une broche GPIO dédiée. Un script Python lit les capteurs toutes les 60 secondes, calcule les indicateurs utiles — par exemple la valeur efficace du courant — et envoie chaque mesure en JSON par HTTP POST vers l'API, avec une clé d'authentification IoT. Si un envoi échoue, le script réessaie automatiquement avec un délai croissant. Un service systemd relance le script au démarrage ou en cas d'arrêt. Voyons maintenant où chacun de ces capteurs prend physiquement place sur la machine.
+
+---
+
+## 18 — DHT22 · emplacement (35 s)
+
+> Voici où le **DHT22** est installé sur la machine. On le voit ici, fixé sur le corps du **servomoteur**, en contact direct avec le carter métallique. Un second DHT22 se trouve à l'intérieur de l'armoire électrique pour la température ambiante. Pourquoi cette position ? Parce que le moteur chauffe avant tout autre composant en cas de problème mécanique — roulement fatigué, sur-effort, défaut de lubrification. Un contact direct donne une lecture rapide, non atténuée par l'air, ce qui maximise la sensibilité aux dérives précoces.
+
+---
+
+## 19 — MPU-6050 · emplacement (35 s)
+
+> Voici où le **MPU-6050** est installé. On le voit ici, collé directement sur le carter métallique à proximité immédiate de la **tête de coupe** — la pièce la plus sollicitée mécaniquement. Pourquoi ce placement au contact ? Parce que le signal de vibration s'atténue extrêmement vite dans l'air, dans une gaine ou dans un support flexible. Un contact rigide sur la pièce vibrante fournit un signal propre, non atténué, riche en harmoniques — indispensable pour distinguer les signatures d'usure des différents éléments mécaniques.
+
+---
+
+## 20 — AMG8833 · emplacement (40 s)
+
+> Voici où l'**AMG8833** est installée. On la voit ici, fixée en hauteur sur le châssis de la machine, à environ **50 centimètres**, en vue plongeante sur la **tête de coupe** et la **zone Gommino**. Pourquoi cette position ? Son champ de 60 degrés par 60 degrés couvre la totalité de la zone chaude critique, avec une résolution de l'ordre de 6 centimètres par pixel. On surveille ainsi conjointement les composants les plus exposés à l'échauffement — le Gommino et le carter de la tête de coupe — sans aucune intrusion mécanique sur les organes en mouvement.
+
+---
+
+## 21 — SCT-013 · emplacement (35 s)
+
+> Voici où la **pince SCT-013** est installée. On la voit ici — la pince bleue — clampée autour d'un câble à l'intérieur de l'armoire électrique. Le signal, converti en tension par une résistance de charge de 33 ohms, est ramené au Raspberry Pi, visible dans le paquet essai en bas, via le convertisseur **ADS1015 12 bits** posé sur la breadboard. Pourquoi cette position ? Parce que ce câble porte le courant tiré par les moteurs — une seule pince suffit à obtenir une vision agrégée de l'état électrique. Comme la mesure est non-invasive, la pose et le retrait se font sans interruption de production. La couche physique posée, passons à la modélisation logicielle du système.
+
+---
+
+## 22 — Diagramme de cas d'utilisation (30 s)
+
+> Le **diagramme de cas d'utilisation** identifie 6 acteurs : 3 acteurs humains — Responsable Maintenance, Chef de Ligne, Technicien — et 3 acteurs système — le Système IA Maintenance, le Système IA Analyse de fiabilité et l'IoT. Ils interviennent sur **12 cas d'utilisation**. Le responsable gère les machines, les comptes utilisateurs et la maintenance. Le chef de ligne surveille l'état des machines et supervise les alertes. Le technicien reçoit les notifications d'alerte et gère les interventions. Côté système, l'IA analyse les pannes et suggère les causes, l'analyse de fiabilité recommande le maintien ou le renouvellement d'une machine, et l'IoT collecte les données capteurs. Toutes les actions humaines passent par l'authentification. Ces cas d'utilisation s'appuient sur 9 classes.
+
+---
+
+## 23 — Diagramme de classes (30 s)
+
+> Le **diagramme de classes** modélise **9 classes**, en 3 groupes. Le cœur métier : Utilisateur, Ligne, Machine, Maintenance et Alerte. La couche IoT : Capteur et RaspberryPi. La couche IA : AnalyseIA pour le diagnostic des pannes, et AnalyseTCO pour l'analyse de fiabilité. Ces classes structurent la base MongoDB. Choix de conception marquant : une seule classe Maintenance porte un **type énuméré** à 5 valeurs — préventive, corrective, prédictive, checklist journalière et checklist préventive — plutôt que 5 classes séparées. Cela simplifie les requêtes et unifie le workflow d'assignation. Ces entités s'enchaînent en temps réel selon un pipeline précis.
+
+---
+
+## 24 — Pipeline de données temps réel (45 s)
+
+> Le pipeline temps réel enchaîne 5 étapes, sans aucune action humaine. 1 — la Raspberry Pi lit les 5 capteurs toutes les 60 secondes et envoie un JSON sur l'endpoint d'ingestion. 2 — le backend valide la mesure, l'associe à la machine et l'enregistre dans MongoDB. 3 — à chaque ingestion, le backend appelle automatiquement le microservice IA. 4 — FastAPI renvoie la probabilité de panne, le type et la cause probable. 5 — 2 seuils décident de l'action : à partir de 60 %, une alerte d'avertissement ; à partir de 80 %, une alerte critique, une intervention prédictive en attente sous 48 heures, et une notification push au responsable maintenance. De la mesure à l'alerte, il faut moins d'une seconde — l'inférence elle-même prend moins de 35 millisecondes. Le développement de ces briques constitue la partie la plus dense du projet.
+
+---
+
+## 25 — Section 4 · Développement (5 s)
+
+> Nous entrons dans la partie développement, la plus dense.
+
+---
+
+## 26 — Backend Express + MongoDB (45 s)
+
+> Le backend expose une API REST avec Node.js et Express. MongoDB stocke 9 collections principales — les mêmes que le diagramme de classes : utilisateurs, lignes, machines, maintenances, alertes, capteurs, Raspberry Pi, analyses IA et analyses de fiabilité — plus les checklists et le planning. L'authentification repose sur JWT avec 3 rôles : responsable, chef de ligne, technicien. Côté API, un middleware vérifie le rôle sur chaque route. Côté interface, un fichier de permissions unique masque les pages et les boutons selon le rôle. La Raspberry Pi, elle, s'authentifie par une clé d'API dédiée. Les controllers utilisent un pattern *asyncHandler* pour propager proprement les erreurs. Le seed script initialise la base avec des machines, utilisateurs et checklists de démonstration. Le backend appelle systématiquement le microservice IA à chaque nouvelle mesure.
+
+---
+
+## 27 — Microservice IA FastAPI (45 s)
+
+> Le microservice IA est écrit en Python avec FastAPI. Il expose 5 endpoints : un test de disponibilité, et 4 endpoints de prédiction. Il embarque 4 modèles, chacun avec un rôle précis. Le Random Forest v1 classe les pannes de l'historique ICEM par zone. Le Random Forest v2 trouve en temps réel la cause probable parmi 13 causes physiques. Le XGBoost v3 estime la probabilité de panne dans les 2 heures. Enfin, une régression linéaire projette la fiabilité sur 3 mois. Les seuils pilotent l'action : à 60 %, une alerte ; à 80 %, une alerte critique et une maintenance prédictive. Le backend appelle ce microservice à chaque ingestion de mesure, sans blocage de la Raspberry Pi. Reste à savoir sur quoi ces modèles ont été entraînés.
+
+---
+
+## 28 — Dataset d'entraînement (35 s)
+
+> Pour entraîner l'IA, on a 2 sources. D'abord, l'historique réel : 1 467 interventions ICEM sur 5 ans. Ensuite, les capteurs ne sont pas encore en production, donc on a généré 64 800 lectures synthétiques, une toutes les 5 minutes. Chaque cause a sa signature. Une panne moteur fait monter le courant, la température et la vibration. Un encrassement crée un point chaud d'environ 5 degrés. Un paramètre logiciel ne laisse aucune trace. Découpage 80/20, stratifié. Plus tard, on ré-entraînera sur les vraies mesures.
+
+---
+
+## 29 — Taxonomie de causes (30 s)
+
+> Le modèle classe chaque panne parmi 13 causes physiques, de C01 à C13. On les regroupe en 3 familles. Signature forte : moteur, courroie, casse — les capteurs les voient bien. Signature partielle : encrassement, réglage MINI, carte électronique. Aucune signature : consommable, capteur en défaut, paramètre logiciel — aucun capteur ne peut les voir. C'est honnête : l'IA complète le diagnostic humain, elle ne le remplace pas.
+
+---
+
+## 30 — Performances F1 (35 s)
+
+> 3 modèles, 3 tâches différentes : on ne compare pas leurs scores entre eux. Le **Random Forest v1**, sur l'historique par zones, reste faible : **0,15**. Le **Random Forest v2** classe les 13 causes plus la classe normale : F1 macro **0,45**, F1 pondéré **0,81**. Les 3 causes sans signature capteur font baisser la moyenne. Le **XGBoost v3** répond à une seule question : dérive dans les 2 heures ? F1 **0,84**, accuracy **0,95**. C'est lui qui déclenche l'alerte. Voyons les erreurs du Random Forest v2.
+
+---
+
+## 31 — Matrice de confusion (30 s)
+
+> Chaque ligne montre où vont les cas réels d'une cause. Sur la diagonale, les causes fortes sont bien reconnues : moteur **86 %**, casse **71 %**. Les causes se confondent peu entre elles. L'erreur principale est la dernière colonne : une panne lue comme « Normal ». C'est le cas de C08, C09 et C13, à **69 à 84 %**, car elles ne laissent aucune trace sur les capteurs. Pour XGBoost, on regarde la courbe ROC.
+
+---
+
+## 32 — Courbe ROC (30 s)
+
+> À gauche, la **courbe ROC** du XGBoost v3 : l'AUC est de **0,978**, le modèle sépare très bien dérive et état normal. À droite, les probabilités prédites : en bleu le normal, en rouge la pré-panne. Les 2 seuils viennent de ce graphique. À **60 %**, une alerte d'avertissement : on accepte quelques fausses alertes. À **80 %**, une alerte critique et une maintenance prédictive automatique. Ces prédictions arrivent ensuite chez l'utilisateur, d'abord sur le web.
+
+---
+
+## 33 — Fonctionnalités web (30 s)
+
+> L'application web sert les 3 profils : responsable maintenance, chef de ligne et technicien. Elle a 6 modules. Le tableau de bord montre MTBF, MTTR et disponibilité. La page Équipements affiche les 13 machines et leurs capteurs en direct. Les interventions ont un bouton « Diagnostiquer avec l'IA ». Viennent ensuite la maintenance préventive, le suivi journalier FOR MAI 52, puis la fiabilité avec son rapport PDF et les alertes. Voici quelques écrans.
+
+---
+
+## 34 — Web · exemples d'écrans (30 s)
+
+> Voici les écrans réels, vus par le responsable maintenance. Le tableau de bord résume les équipements, les interventions et la disponibilité. La fiche d'une machine affiche ses 4 capteurs en direct, rafraîchis toutes les 30 secondes. Les interventions sont classées en préventive, corrective et prédictive. La page Alertes montre les prédictions de l'IA : probabilité de panne et cause suggérée. Enfin, Analyses donne MTBF, MTTR et disponibilité. Passons au mobile.
+
+---
+
+## 35 — Fonctionnalités mobile (30 s)
+
+> L'application mobile Flutter sert le technicien et le chef de ligne, au pied de la machine. Elle reprend les modules clés du web. On y gère les interventions, avec photos avant et après. Le bouton « Diagnostiquer avec l'IA » marche aussi sur mobile. Le suivi journalier et les checklists préventives se remplissent sur le téléphone, avec une photo pour chaque contrôle. Enfin, Firebase envoie une notification push pour chaque alerte critique ou intervention assignée. Voici les écrans.
+
+---
+
+## 36 — Mobile · exemples d'écrans (30 s)
+
+> Voici les écrans réels sur Android. Le tableau de bord reprend les indicateurs du web. Les interventions s'affichent en cartes, avec leur type et leur état ; le responsable approuve celles en attente. Sur une intervention, le bouton « Diagnostiquer avec l'IA » donne la cause probable, la confiance et les 4 capteurs lus. Enfin, l'écran Alertes reçoit les notifications push, triées par criticité. Reste un module transverse : l'analyse de fiabilité.
+
+---
+
+## 37 — Analyse de fiabilité (30 s)
+
+> Le module de fiabilité aide à décider : garder une machine ou la renouveler. Pour chaque machine, il calcule MTBF, MTTR, disponibilité et nombre de pannes. Une régression linéaire projette la disponibilité sur 3 mois. Le backend en fait un rapport PDF, avec une recommandation : maintenir, surveiller, planifier le remplacement ou remplacer. Ici, la Gamma 333 : 99,2 % de disponibilité, recommandation « surveiller ». Pas de coûts en dinars : ils demandent la validation de la direction financière. Tout cela tourne sur une infrastructure locale.
+
+---
+
+## 38 — Déploiement (30 s)
+
+> Tout est déployé sur le **serveur interne d'ICEM**. Un Windows Server héberge le backend, l'application web et la base MongoDB. Le backend tourne comme service Windows avec NSSM ; le web est publié sous IIS. MongoDB n'écoute que le réseau interne. Le Raspberry Pi et les téléphones passent par le Wi-Fi d'usine ; le mobile est installé par APK. Seules les notifications Firebase sortent du réseau. Les données de production restent donc chez ICEM. Passons à la démonstration.
+
+---
+
+## 39 — Section 5 · Démonstration (5 s)
+
+> Passons à la démonstration live.
+
+---
+
+## 40 — KPI et résultats (30 s)
+
+> En chiffres : une architecture en 5 couches, de la perception à l'application. 5 capteurs par machine. 4 modèles d'apprentissage ; le XGBoost atteint 0,84 de F1 sur la dérive, avec une AUC de 0,978. Moins d'une seconde entre la mesure et l'alerte. 2 applications sur la même API, testée par plus de 120 requêtes Postman. Les 3 objectifs sont atteints : instrumenter, prédire, restituer. Ces chiffres nous amènent à la conclusion.
+
+---
+
+## 41 — Conclusion (30 s)
+
+> En conclusion, nous livrons un **prototype opérationnel** sur 3 axes. **1** — instrumenter : 5 capteurs par machine, moins d'une seconde de la mesure à l'alerte. **2** — prédire : le Random Forest trouve la cause parmi 13, le XGBoost atteint 0,84 de F1 ; au-delà de 80 %, une maintenance prédictive est créée automatiquement. **3** — restituer : web et mobile sur la même API, notifications push, rapport de fiabilité, le tout déployé chez ICEM. Place aux perspectives.
+
+---
+
+## 42 — Perspectives (30 s)
+
+> Première étape : ré-entraîner les modèles avec les vraies mesures des capteurs. Ensuite, 4 pistes. **1** — l'Edge AI : faire tourner XGBoost sur le Raspberry Pi, même sans réseau. **2** — l'intégration HMI : lire les alarmes de la machine Komax et les croiser avec notre diagnostic. **3** — la vision industrielle : une caméra et un réseau CNN pour les défauts de sertissage. **4** — la maintenance prescriptive : proposer l'action, les pièces et le bon créneau.
+
+---
+
+## 43 — Merci (30 s)
+
+> Je vous remercie pour votre attention. Je remercie également Monsieur Imed Hidri pour son encadrement académique, Monsieur Yassine Hammami pour son encadrement société, ainsi que l'équipe ICEM Nabeul qui m'a accueilli pendant ces 6 mois. Je suis à votre disposition pour toutes vos questions.
+
+---
+
+## Timing global
+
+| Bloc | Slides | Durée |
+|---|---|---|
+| Cover + Plan | 2 | 1 min 15 |
+| Section 1 (Intro + contexte) | 5 | 3 min 20 |
+| Section 2 (État de l'art) | 6 | 4 min 05 |
+| Section 3 (Conception) | 10 | 5 min 15 |
+| Section 4 (Développement) | 14 | 9 min 15 |
+| Section 5 (Démo) | 1 | 5 s (+ démo live hors chrono) |
+| Section 6 (Résultats + conclusion) | 5 | 2 min 40 |
+| **Total oral** | **43** | **~25 min** |
+
+> Réserve 3–5 min de démo live entre Section 5 et KPI selon le temps restant.

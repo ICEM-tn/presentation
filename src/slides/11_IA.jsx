@@ -4,10 +4,9 @@ import AnimatedCounter from '../components/AnimatedCounter.jsx';
 import NetworkMesh from '../components/NetworkMesh.jsx';
 
 const models = [
-  { name: 'RF v1', role: 'Historique ICEM · zone de panne', tag: 'Historique', metric: 'F1 macro', value: 0.15, color: '#6879C9', delay: 0.4 },
-  { name: 'RF v2', role: 'Capteurs IoT · 13 causes physiques', tag: 'Temps réel · cause', metric: 'F1 macro', value: 0.45, color: '#4ECDC4', delay: 0.55 },
-  { name: 'XGBoost v3', role: 'Probabilité de panne · fenêtre 2 h', tag: 'Temps réel · probabilité', metric: 'F1 binaire', value: 0.84, color: '#FF7A1A', delay: 0.7 },
-  { name: 'Régression linéaire', role: 'Fiabilité · projection 3 mois', tag: 'Fiabilité', metric: 'R² test', value: 0.79, color: '#B388FF', delay: 0.85 },
+  { name: 'Random Forest', role: 'Cause de la panne · 5 causes (C01 à C05)', tag: 'Pourquoi ?', metric: 'F1 macro', value: 0.85, color: '#4ECDC4', delay: 0.4 },
+  { name: 'XGBoost', role: 'Probabilité de panne dans les 24 h', tag: 'Quand ?', metric: 'AUC', value: 0.94, color: '#FF7A1A', delay: 0.55 },
+  { name: 'Régression linéaire', role: 'Fiabilité · projection 3 mois', tag: 'Fiabilité', metric: 'R² test', value: 0.79, color: '#B388FF', delay: 0.7 },
 ];
 
 export default function IA() {
@@ -22,7 +21,7 @@ export default function IA() {
         className="slide-title"
         style={{ marginBottom: 12 }}
       >
-        Quatre modèles ML.
+        Trois modèles ML.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -31,10 +30,10 @@ export default function IA() {
         className="slide-subtitle"
         style={{ marginBottom: 40 }}
       >
-        Un microservice FastAPI · scikit-learn + XGBoost.
+        Un microservice FastAPI · mesures capteurs des 2 dernières heures.
       </motion.p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 18 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18 }}>
         {models.map((m) => (
           <motion.div
             key={m.name}

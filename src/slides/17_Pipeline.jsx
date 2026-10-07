@@ -24,16 +24,16 @@ export default function Pipeline() {
         className="slide-subtitle"
         style={{ marginBottom: 80 }}
       >
-        Cinq étapes · moins d'une seconde · sans intervention humaine.
+        Cinq étapes · une analyse toutes les 5 min · sans intervention humaine.
       </motion.p>
 
       <PipelineFlow
         delayBase={0.4}
         steps={[
           { icon: '📡', label: 'Capteur', hint: '5 capteurs' },
-          { icon: '🖥', label: 'Raspberry', hint: 'mesure toutes les 60 s' },
+          { icon: '🖥', label: 'Raspberry', hint: 'mesures toutes les 10 à 60 s' },
           { icon: '⚙', label: 'Backend', hint: 'POST /ingest' },
-          { icon: '🧠', label: 'IA', hint: 'seuils 60 % / 80 %' },
+          { icon: '🧠', label: 'IA', hint: '2 h de mesures · 60 % / 80 %' },
           { icon: '🔔', label: 'Alerte', hint: 'push Firebase' },
         ]}
       />
@@ -50,8 +50,8 @@ export default function Pipeline() {
         }}
       >
         {[
-          ['< 1 s', "De la mesure à l'alerte", 'var(--cyan-400)'],
-          ['< 35 ms', 'Inférence IA', 'var(--orange-400)'],
+          ['< 1 s', "De l'analyse à l'alerte", 'var(--cyan-400)'],
+          ['< 70 ms', 'Inférence IA', 'var(--orange-400)'],
           ['Automatique', 'Zéro action manuelle', 'var(--green-400)'],
         ].map(([v, k, c], i) => (
           <motion.div

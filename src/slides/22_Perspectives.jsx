@@ -11,7 +11,7 @@ const items = [
   {
     n: '02',
     title: 'Intégration HMI',
-    desc: 'Lire les alarmes Komax (OPC-UA ou Modbus) et les croiser avec le diagnostic IA.',
+    desc: 'Lire les alarmes Komax et les croiser avec le diagnostic IA.',
     tag: 'Machine',
   },
   {

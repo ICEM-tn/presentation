@@ -12,7 +12,7 @@ export default function Dataset() {
         className="slide-title"
         style={{ marginBottom: 12 }}
       >
-        Deux sources de données.
+        De l'historique au jeu de données.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -21,17 +21,17 @@ export default function Dataset() {
         className="slide-subtitle"
         style={{ marginBottom: 40 }}
       >
-        Historique réel · signaux synthétiques ancrés physiquement.
+        L'historique calibre · la physique de chaque panne génère les mesures.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 32, alignItems: 'center' }}>
         <DataCard
           delay={0.4}
-          label="Historique"
+          label="Historique ICEM"
           value={1467}
-          unit="événements"
-          hint="ICEM · 2019 – 2024"
-          badges={['5 ans', 'Zones', 'MTBF']}
+          unit="interventions · surtout 2022"
+          hint="Seul : F1 0,15 → il faut les capteurs"
+          badges={['Zones', 'Horaires', 'Arrêts']}
         />
 
         <motion.div
@@ -44,16 +44,16 @@ export default function Dataset() {
             fontWeight: 300,
           }}
         >
-          +
+          →
         </motion.div>
 
         <DataCard
           delay={0.6}
-          label="Synthétique IoT"
-          value={64800}
+          label="Jeu de données capteurs"
+          value={112680}
           unit="lignes · 1 toutes les 5 min"
-          hint="Signature physique par cause"
-          badges={['DHT · MPU · AMG · SCT', '13 causes']}
+          hint="12 mois · 2 machines · 69 pannes"
+          badges={['DHT · MPU · AMG · SCT', '5 causes']}
           highlight
         />
       </div>
@@ -76,8 +76,8 @@ export default function Dataset() {
       >
         <div style={{ fontSize: 24, color: 'var(--cyan-400)' }}>◈</div>
         <div>
-          <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Découpage stratifié</div>
-          <div style={{ fontSize: 13, color: 'var(--grey-300)' }}>80 % entraînement · 20 % test · SMOTE sur l'entraînement seulement</div>
+          <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Découpage par semaines</div>
+          <div style={{ fontSize: 13, color: 'var(--grey-300)' }}>1 semaine sur 5 en test · répété 5 fois · jamais de mesure voisine des deux côtés</div>
         </div>
         <div style={{
           fontFamily: 'var(--font-display)',
@@ -85,8 +85,8 @@ export default function Dataset() {
           fontWeight: 800,
           color: 'var(--cyan-400)',
         }}>
-          <AnimatedCounter to={12960} delay={1.2} />
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 400, color: 'var(--grey-500)', textAlign: 'right' }}>lignes de test</div>
+          <AnimatedCounter to={5} delay={1.2} />
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 400, color: 'var(--grey-500)', textAlign: 'right' }}>plis</div>
         </div>
       </motion.div>
     </Slide>

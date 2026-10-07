@@ -3,9 +3,9 @@ import Slide from '../components/Slide.jsx';
 import AnimatedCounter from '../components/AnimatedCounter.jsx';
 
 const kpis = [
-  { label: 'F1-score', value: 0.84, decimals: 2, decimalComma: true, hint: 'XGBoost v3 · cible binaire', color: 'var(--orange-400)' },
+  { label: 'Pannes annoncées', value: 69, suffix: ' / 69', hint: 'XGBoost · ~20 h d’avance', color: 'var(--orange-400)' },
   { label: 'Couches', value: 5, hint: 'Perception → Application', color: 'var(--cyan-400)' },
-  { label: 'Modèles ML', value: 4, hint: 'RF v1 · RF v2 · XGBoost · régression', color: 'var(--green-400)' },
+  { label: 'Modèles ML', value: 3, hint: 'Random Forest · XGBoost · régression', color: 'var(--green-400)' },
   { label: 'Requêtes Postman', value: 120, suffix: '+', hint: '16 dossiers · API testée', color: 'var(--yellow-400)' },
 ];
 

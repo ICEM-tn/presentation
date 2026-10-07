@@ -5,12 +5,12 @@ const pillars = [
   {
     n: '01',
     title: 'Instrumenter',
-    desc: '5 capteurs par machine, Raspberry Pi vers le backend en JSON, moins d’1 seconde de la mesure à l’alerte.',
+    desc: '5 capteurs par machine, Raspberry Pi vers le backend en JSON, analyse toutes les 5 min, moins d’1 seconde jusqu’à l’alerte.',
   },
   {
     n: '02',
     title: 'Prédire',
-    desc: 'Random Forest sur 13 causes (F1 pondéré 0,81), XGBoost à 0,84 de F1 ; au-delà de 80 %, maintenance prédictive créée automatiquement.',
+    desc: 'Random Forest sur 5 causes (F1 macro 0,85), XGBoost : panne dans les 24 h (AUC 0,94) ; au-delà de 80 %, maintenance prédictive créée automatiquement.',
   },
   {
     n: '03',

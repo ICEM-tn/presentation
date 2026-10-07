@@ -29,7 +29,7 @@ export default function Probleme() {
           delay={0.45}
           value={1467}
           label="Pannes documentées"
-          hint="Historique ICEM 2019–2024"
+          hint="Historique ICEM · surtout 2022"
           icon="⚠"
         />
         <PainCard

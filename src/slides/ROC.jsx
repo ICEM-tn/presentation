@@ -11,7 +11,7 @@ export default function ROC() {
         className="slide-title"
         style={{ marginBottom: 12 }}
       >
-        Courbe ROC et seuils.
+        Panne dans les 24 h.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -20,22 +20,22 @@ export default function ROC() {
         className="slide-subtitle"
         style={{ marginBottom: 28 }}
       >
-        XGBoost v3 · AUC 0,978 · 2 seuils : 60 % alerte · 80 % maintenance automatique.
+        XGBoost · AUC 0,94 · 2 seuils : 60 % alerte · 80 % intervention prédictive.
       </motion.p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 28, alignItems: 'center' }}>
         <Figure
           delay={0.4}
-          title="Courbe ROC — XGBoost v3"
-          src="img/ml/roc_xgb.png"
-          alt="Courbe ROC XGBoost v3"
+          title="Courbe ROC — XGBoost"
+          src="img/ml/roc_xgb_v2.png"
+          alt="Courbe ROC XGBoost"
           imgStyle={{ height: '46vh', width: 'auto' }}
         />
         <Figure
           delay={0.6}
-          title="Probabilités prédites · Normal vs Pré-panne"
-          src="img/ml/proba_distribution_xgb.png"
-          alt="Distribution des probabilités XGBoost v3 et seuils 60 % / 80 %"
+          title="Probabilités prédites · panne dans 24 h ou non"
+          src="img/ml/proba_xgb_v2.png"
+          alt="Distribution des probabilités XGBoost et seuils 60 % / 80 %"
           imgStyle={{ width: '100%', height: 'auto' }}
         />
       </div>
@@ -48,16 +48,17 @@ export default function ROC() {
           marginTop: 22,
           padding: '14px 20px',
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: 'repeat(4, 1fr)',
           gap: 20,
           background: 'linear-gradient(90deg, rgba(24, 37, 98, 0.5), rgba(10, 18, 48, 0.3))',
           border: '1px solid rgba(104, 121, 201, 0.2)',
           borderRadius: 10,
         }}
       >
-        <MiniStat label="AUC" value="0,978" color="var(--green-400)" />
-        <MiniStat label="Seuil alerte (avertissement)" value="60 %" color="var(--yellow-400)" />
-        <MiniStat label="Seuil critique + maintenance auto" value="80 %" color="var(--orange-400)" />
+        <MiniStat label="Pannes annoncées" value="69 / 69" color="var(--green-400)" />
+        <MiniStat label="Avance médiane" value="19,5 h" color="var(--cyan-400)" />
+        <MiniStat label="Fausses alertes" value="≈ 1 / semaine" color="var(--yellow-400)" />
+        <MiniStat label="Seuils" value="60 % · 80 %" color="var(--orange-400)" />
       </motion.div>
     </Slide>
   );

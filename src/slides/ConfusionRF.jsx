@@ -36,8 +36,8 @@ export default function ConfusionRF() {
           }}
         >
           <img
-            src="img/ml/confusion_rf.png"
-            alt="Matrice de confusion RF v2"
+            src="img/ml/confusion_rf_v2.png"
+            alt="Matrice de confusion Random Forest"
             style={{ display: 'block', height: '62vh', width: 'auto' }}
           />
         </motion.div>
@@ -59,9 +59,9 @@ export default function ConfusionRF() {
           <div style={{ fontSize: 13, color: 'var(--grey-300)', lineHeight: 1.5 }}>
             Ligne = % des cas réels d'une cause · diagonale = bien classés
           </div>
-          <MiniStat label="Accuracy" value="0,82" color="var(--cyan-400)" />
-          <MiniStat label="F1 pondéré" value="0,81" color="var(--orange-400)" />
-          <MiniStat label="C08 · C09 · C13 lues « Normal »" value="69–84 %" color="var(--grey-300)" />
+          <MiniStat label="Accuracy" value="0,96" color="var(--cyan-400)" />
+          <MiniStat label="F1 macro" value="0,85" color="var(--orange-400)" />
+          <MiniStat label="Courroie lue « usure » (vibration)" value="16 %" color="var(--grey-300)" />
         </motion.div>
       </div>
     </Slide>

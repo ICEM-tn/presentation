@@ -1,41 +1,33 @@
 import { motion } from 'framer-motion';
 import Slide from '../components/Slide.jsx';
 
-// 13 causes C01–C13 (rapport ch3, tableau F1 par cause), regroupées en
-// 3 familles selon la signature capteur (rapport ch3, « trois régimes »).
+// 5 causes suivies par les capteurs (rapport ch2, tab. causes suivies),
+// regroupées selon le capteur qui réagit.
 const families = [
   {
-    key: 'forte',
-    title: 'Signature forte',
-    color: '#4ADE80',
+    key: 'vibration',
+    title: 'Vibration',
+    color: '#4ECDC4',
     causes: [
-      { code: 'C11', label: 'Moteur ou servo en panne' },
-      { code: 'C06', label: 'Courroie détendue / patinage' },
-      { code: 'C02', label: 'Casse / rupture pièce' },
+      { code: 'C01', label: 'Usure mécanique', sensors: 'MPU · lente, sur des jours' },
+      { code: 'C02', label: 'Courroie détendue', sensors: 'MPU + AMG transmission' },
     ],
   },
   {
-    key: 'partielle',
-    title: 'Signature partielle',
+    key: 'moteur',
+    title: 'Chaleur moteur',
     color: '#FF7A1A',
     causes: [
-      { code: 'C07', label: 'Encrassement' },
-      { code: 'C03', label: 'MINI / Terminale mal ajustée' },
-      { code: 'C12', label: 'Carte / électronique en panne' },
-      { code: 'C04', label: "Fuite d'air" },
-      { code: 'C05', label: 'Pression hors plage' },
-      { code: 'C01', label: 'Usure pièce mécanique' },
-      { code: 'C10', label: 'Câble ou connectique en défaut' },
+      { code: 'C03', label: 'Ventilation moteur encrassée', sensors: 'AMG + DHT moteur' },
+      { code: 'C04', label: 'Surcharge moteur', sensors: 'SCT + AMG + DHT + MPU' },
     ],
   },
   {
-    key: 'nulle',
-    title: 'Aucune signature',
-    color: '#8B93B8',
+    key: 'armoire',
+    title: 'Chaleur armoire',
+    color: '#B388FF',
     causes: [
-      { code: 'C08', label: 'Consommable à remplacer' },
-      { code: 'C09', label: 'Capteur en défaut' },
-      { code: 'C13', label: 'Paramètre logiciel à ajuster' },
+      { code: 'C05', label: 'Surchauffe armoire', sensors: 'DHT armoire seul' },
     ],
   },
 ];
@@ -51,7 +43,7 @@ export default function Causes() {
         className="slide-title"
         style={{ marginBottom: 12 }}
       >
-        Treize causes.
+        Cinq causes suivies.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -60,10 +52,10 @@ export default function Causes() {
         className="slide-subtitle"
         style={{ marginBottom: 32 }}
       >
-        Grille de type FMEA (AFNOR X60-510) · 3 familles selon la signature capteur.
+        Chaque cause fait réagir ses capteurs · et pas les autres.
       </motion.p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '3fr 7fr 3fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20 }}>
         {families.map((f) => (
           <div key={f.key} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{
@@ -80,7 +72,7 @@ export default function Causes() {
             </div>
             <div style={{
               display: 'grid',
-              gridTemplateColumns: f.causes.length > 3 ? 'repeat(2, 1fr)' : '1fr',
+              gridTemplateColumns: '1fr',
               gap: 10,
             }}>
               {f.causes.map((c) => {
@@ -111,8 +103,11 @@ export default function Causes() {
                     }}>
                       {c.code}
                     </div>
-                    <div style={{ fontSize: 13, lineHeight: 1.3 }}>
+                    <div style={{ fontSize: 15, lineHeight: 1.3, fontWeight: 600 }}>
                       {c.label}
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--grey-300)', fontFamily: 'var(--font-mono)' }}>
+                      {c.sensors}
                     </div>
                   </motion.div>
                 );
@@ -135,7 +130,7 @@ export default function Causes() {
           letterSpacing: '0.05em',
         }}
       >
-        L'IA complète le diagnostic humain · elle ne le remplace pas
+        Non suivies (aucune signature capteur) : casse soudaine · réglage MINI · fuite d'air · consommables · câbles · logiciel → IHM Komax
       </motion.div>
     </Slide>
   );
