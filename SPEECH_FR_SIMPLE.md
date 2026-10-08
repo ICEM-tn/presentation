@@ -98,7 +98,7 @@
 
 ## 14 — Stack technique (35 s)
 
-> On a utilisé **3 blocs** logiciels. Pour le **backend** : Node.js, Express, MongoDB, et JWT pour l'authentification. Pour l'**IA** : Python, FastAPI, et scikit-learn. Nos modèles sont Random Forest et XGBoost. Pour le **frontend** : React pour le web, Flutter pour le mobile. On utilise aussi Firebase pour les notifications push. Tout est déployé sur le serveur interne d'ICEM, pas sur le cloud. Voyons comment ces briques s'organisent dans l'architecture.
+> On a utilisé **3 blocs** logiciels. Pour le **backend** : Node.js, Express, MongoDB, et JWT pour l'authentification. Pour l'**IA** : Python, FastAPI, et scikit-learn. On a **3 modèles** : Random Forest pour la cause, XGBoost pour la panne dans 24 heures, et une régression linéaire pour la fiabilité. Pour le **frontend** : React pour le web, Flutter pour le mobile. On utilise aussi Firebase pour les notifications push. Tout est déployé sur le serveur interne d'ICEM, pas sur le cloud. Voyons comment ces briques s'organisent dans l'architecture.
 
 ---
 
@@ -122,7 +122,7 @@
 
 ## 18 — DHT22 · emplacement (30 s)
 
-> Voici **où on a placé le DHT22**. On le voit ici, **fixé sur le corps du servomoteur**. Il est en contact direct avec le métal. On a mis **un deuxième DHT22** dans l'**armoire électrique**. Il donne la température ambiante. Pourquoi cet endroit ? Parce que **le moteur chauffe en premier** quand un roulement fatigue. Un contact direct donne une lecture **rapide et fiable**.
+> Voici **où on a placé le DHT22**. On le voit ici, **fixé sur le corps du servomoteur**. Il est en contact direct avec le métal. Pourquoi cet endroit ? Parce que **le moteur chauffe en premier** quand un roulement fatigue. Un contact direct donne une lecture **rapide et fiable**.
 
 ---
 
@@ -138,21 +138,21 @@
 
 ---
 
-## 21 — SCT-013 · emplacement (30 s)
+## 21 — Armoire électrique · SCT-013 + DHT22 (35 s)
 
-> Voici **où on a placé la SCT-013**. On la voit ici, la **pince bleue**, clampée autour d'un câble à l'intérieur de l'armoire. Le signal est ramené au **Raspberry Pi** (le paquet essai en bas) par le convertisseur **ADS1015** posé sur la breadboard. Pourquoi cet endroit ? Parce que ce câble porte le **courant tiré par les moteurs**. **Une seule pince** suffit pour voir l'état électrique. La pose se fait **sans arrêter la production**. La couche physique est posée. Passons à la modélisation logicielle.
-
----
-
-## 22 — Diagramme de cas d'utilisation (30 s)
-
-> Voici le **diagramme de cas d'utilisation**. Il montre **6 acteurs** et **12 cas d'utilisation**. 3 acteurs humains. Le responsable maintenance gère les machines, les comptes et la maintenance. Le chef de ligne surveille les machines et les alertes. Le technicien reçoit les alertes et gère les interventions. 3 acteurs système. L'IA maintenance analyse les pannes. L'IA fiabilité analyse chaque machine et recommande de la garder ou de la renouveler. L'IoT collecte les données des capteurs. Pour chaque action, l'utilisateur doit d'abord **s'authentifier**. Ces cas d'utilisation s'appuient sur 9 classes.
+> Voici l'**armoire électrique**. On y a placé 2 capteurs. La **pince SCT-013**, la pince bleue, clampée autour d'un câble. Et **un deuxième DHT22**, pour la température de l'armoire. Le signal est ramené au **Raspberry Pi** (le paquet essai en bas) par le convertisseur **ADS1015** posé sur la breadboard. Pourquoi cet endroit ? Parce que ce câble porte le **courant tiré par les moteurs**. **Une seule pince** suffit pour voir l'état électrique. La pose se fait **sans arrêter la production**. Le DHT22 surveille la **chaleur de l'armoire**. La couche physique est posée. Passons à la modélisation logicielle.
 
 ---
 
-## 23 — Diagramme de classes (30 s)
+## 22 — Diagramme de cas d'utilisation (25 s)
 
-> Voici le **diagramme de classes**. Il montre **9 classes**. 5 classes pour le métier : utilisateur, ligne, machine, maintenance et alerte. 2 classes pour l'IoT : capteur et Raspberry Pi. 2 classes pour l'IA : analyse des pannes et analyse de fiabilité. Ces classes structurent la base MongoDB. Un choix important : pour la maintenance, on a utilisé **une seule classe** avec un champ *type*. Ce champ a 5 valeurs : préventive, corrective, prédictive, checklist journalière et checklist préventive. C'est plus simple que 5 classes séparées. Ces entités s'enchaînent en temps réel selon un pipeline précis.
+> Voici le **diagramme de cas d'utilisation**. Il a **6 acteurs** et **12 cas d'utilisation**. 3 acteurs humains : responsable maintenance, chef de ligne, technicien. 3 acteurs système : l'IA maintenance, l'IA fiabilité et l'IoT. Pour chaque action, on doit d'abord **s'authentifier**. Ces cas s'appuient sur 9 classes.
+
+---
+
+## 23 — Diagramme de classes (25 s)
+
+> Voici le **diagramme de classes**. Il a **9 classes**. 5 pour le métier : utilisateur, ligne, machine, maintenance, alerte. 2 pour l'IoT : capteur et Raspberry Pi. 2 pour l'IA : pannes et fiabilité. Pour la maintenance, **une seule classe** avec un champ *type* à 5 valeurs. Ces classes s'enchaînent en temps réel.
 
 ---
 
@@ -198,15 +198,15 @@
 
 ---
 
-## 31 — Matrice de confusion (30 s)
+## 31 — Matrice de confusion (35 s)
 
-> Chaque ligne montre où vont les cas réels d'une cause. Les erreurs sont logiques. Souvent, la panne est lue « Normal » : au début, elle est trop faible. La courroie et l'usure se mélangent un peu : les 2 vibrent. La surcharge et la ventilation aussi : les 2 chauffent le moteur. Passons au XGBoost.
+> En vertical, la **cause réelle**. En horizontal, la **cause prédite**. Chaque case donne un pourcentage. La **diagonale** foncée, ce sont les bonnes réponses : **0,92** pour la surchauffe armoire. L'erreur principale est dans la colonne **« Normal »** : **0,39** pour l'usure, car au début la panne est trop faible. Et **0,16** : la courroie est lue comme usure, car les 2 vibrent. Passons au XGBoost.
 
 ---
 
-## 32 — XGBoost · panne dans 24 h (30 s)
+## 32 — XGBoost · panne dans 24 h (40 s)
 
-> Le XGBoost a une **AUC de 0,94**. Le plus important : sur **69 pannes**, les **69** sont annoncées, environ **20 heures** avant. Sur une machine normale, on a à peu près **1 fausse alerte par semaine**. À **60 %**, une alerte. À **80 %**, une intervention prédictive. Ces prédictions arrivent ensuite sur le web.
+> À gauche, la **courbe ROC**. En x, les **fausses alertes**. En y, les **pannes détectées**. La courbe monte vite en haut à gauche : c'est bon signe. La ligne pointillée, c'est le hasard. L'**AUC** est de **0,94**. À droite, en x la **probabilité**. Le bleu, pas de panne, reste près de 0. L'orange, panne dans 24 h, va près de 1. Les 2 traits pointillés sont nos seuils : **60 %** alerte, **80 %** intervention. Résultat : **69 pannes sur 69** annoncées, environ **20 heures** avant. Ces prédictions arrivent ensuite sur le web.
 
 ---
 

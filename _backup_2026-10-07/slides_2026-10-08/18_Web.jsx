@@ -13,19 +13,9 @@ const shots = [
 
 export default function Web() {
   const [i, setI] = useState(0);
-  // Navigation manuelle : clic sur une carte, ou flèche bas / haut
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setI((v) => (v + 1) % shots.length);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setI((v) => (v - 1 + shots.length) % shots.length);
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const t = setInterval(() => setI((v) => (v + 1) % shots.length), 5000);
+    return () => clearInterval(t);
   }, []);
 
   return (
@@ -99,7 +89,6 @@ export default function Web() {
             <motion.button
               key={s.name}
               onClick={() => setI(idx)}
-              onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') e.preventDefault(); }}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.5 + idx * 0.06 }}
@@ -114,7 +103,6 @@ export default function Web() {
                 flexDirection: 'column',
                 gap: 2,
                 transition: 'all 0.2s',
-                cursor: 'pointer',
               }}
             >
               <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 13 }}>{s.name}</div>

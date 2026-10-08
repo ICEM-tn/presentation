@@ -7,6 +7,7 @@ export default function SensorSpec({
   measure,
   image,
   specs = [],
+  why,
   accent = 'var(--orange-400)',
   imageMaxHeight = 320,
   imageBackground = '#fff',
@@ -75,6 +76,7 @@ export default function SensorSpec({
               padding: '16px 18px',
               borderLeft: `3px solid ${accent}`,
               background: `linear-gradient(90deg, ${accent}12, transparent)`,
+              marginBottom: 18,
             }}
           >
             <div style={{
@@ -92,8 +94,8 @@ export default function SensorSpec({
               padding: 0,
               display: 'flex',
               flexDirection: 'column',
-              gap: 10,
-              fontSize: 18,
+              gap: 6,
+              fontSize: 15,
               lineHeight: 1.5,
               listStyle: 'none',
             }}>
@@ -102,7 +104,7 @@ export default function SensorSpec({
                   <span style={{
                     position: 'absolute',
                     left: 0,
-                    top: 11,
+                    top: 9,
                     width: 6,
                     height: 6,
                     borderRadius: '50%',
@@ -114,6 +116,28 @@ export default function SensorSpec({
             </ul>
           </motion.div>
 
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.65 }}
+            style={{
+              padding: '16px 18px',
+              borderLeft: `3px solid ${accent}`,
+              background: `linear-gradient(90deg, ${accent}12, transparent)`,
+            }}
+          >
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              color: accent,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              marginBottom: 8,
+            }}>
+              Pourquoi ce choix
+            </div>
+            <div style={{ fontSize: 15, lineHeight: 1.55 }}>{why}</div>
+          </motion.div>
         </div>
       </div>
     </Slide>

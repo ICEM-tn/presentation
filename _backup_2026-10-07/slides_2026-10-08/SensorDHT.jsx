@@ -13,6 +13,7 @@ export default function SensorDHT() {
         'Interface single-wire · alimentation 3-5 V',
         'Coût unitaire ≈ 3 €',
       ]}
+      why="Le moteur chauffe avant de tomber en panne. Le DHT22 détecte ce signal très tôt. Il est simple, fiable, et peu cher — deux unités par machine restent dans le budget."
       accent="var(--yellow-400)"
     />
   );

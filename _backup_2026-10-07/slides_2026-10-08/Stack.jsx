@@ -19,11 +19,7 @@ const rows = [
       { src: 'img/stack/logo_python.png',   name: 'Python' },
       { src: 'img/stack/logo_fastapi.png',  name: 'FastAPI' },
       { src: 'img/stack/logo_sklearn.svg',  name: 'scikit-learn' },
-    ],
-    models: [
-      { src: 'img/stack/logo_random_forest.svg',     name: 'Random Forest',       role: 'cause de la panne' },
-      { src: 'img/stack/logo_xgboost.png',           name: 'XGBoost',             role: 'panne dans 24 h' },
-      { src: 'img/stack/logo_linear_regression.svg', name: 'Régression linéaire', role: 'fiabilité' },
+      { src: 'img/stack/logo_xgboost.png',  name: 'XGBoost' },
     ],
   },
   {
@@ -54,12 +50,12 @@ export default function Stack() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
         className="slide-subtitle"
-        style={{ marginBottom: 24 }}
+        style={{ marginBottom: 32 }}
       >
         Trois familles technologiques mobilisées.
       </motion.p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, flex: 1 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20, flex: 1 }}>
         {rows.map((row, ri) => (
           <motion.div
             key={row.label}
@@ -95,73 +91,39 @@ export default function Stack() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'center' }}>
               {row.items.map((it, i) => (
-                <LogoTile key={it.name} it={it} delay={0.6 + ri * 0.15 + i * 0.08} />
-              ))}
-
-              {row.models && (
-                <>
-                  <div style={{
-                    alignSelf: 'stretch',
+                <motion.div
+                  key={it.name}
+                  initial={{ opacity: 0, scale: 0.7 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.6 + ri * 0.15 + i * 0.08 }}
+                  style={{
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    paddingLeft: 12,
-                    borderLeft: '1px solid rgba(104, 121, 201, 0.3)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    color: row.color,
-                    writingMode: 'vertical-rl',
-                    transform: 'rotate(180deg)',
+                    gap: 6,
+                    minWidth: 90,
+                  }}
+                >
+                  <div style={{
+                    width: 62, height: 62,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: '#fff',
+                    borderRadius: 12,
+                    padding: 8,
                   }}>
-                    3 modèles ML
+                    <img src={it.src} alt={it.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.opacity = 0.15; }} />
                   </div>
-                  {row.models.map((it, i) => (
-                    <LogoTile key={it.name} it={it} delay={1.0 + i * 0.1} />
-                  ))}
-                </>
-              )}
+                  <div style={{ fontSize: 12, color: 'var(--navy-100)', opacity: 0.85 }}>
+                    {it.name}
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         ))}
       </div>
     </Slide>
-  );
-}
-
-function LogoTile({ it, delay }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.7 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, delay }}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 6,
-        minWidth: 110,
-      }}
-    >
-      <div style={{
-        width: 88, height: 88,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: '#fff',
-        borderRadius: 16,
-        padding: 10,
-      }}>
-        <img src={it.src} alt={it.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.opacity = 0.15; }} />
-      </div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--navy-100)' }}>
-        {it.name}
-      </div>
-      {it.role && (
-        <div style={{ fontSize: 11, color: 'var(--grey-300)', marginTop: -4 }}>
-          {it.role}
-        </div>
-      )}
-    </motion.div>
   );
 }

@@ -13,6 +13,7 @@ export default function SensorMPU() {
         'Interface I²C · fréquence jusqu’à 1 kHz',
         'Alimentation 3-5 V · coût ≈ 4 €',
       ]}
+      why="Composant standard, très documenté. Les trois axes donnent une signature vibratoire riche. On peut ainsi distinguer une courroie détendue d'un roulement usé — deux causes physiques différentes."
       accent="var(--cyan-400)"
     />
   );

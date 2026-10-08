@@ -5,23 +5,8 @@ import AnimatedCounter from '../components/AnimatedCounter.jsx';
 export default function ICEM() {
   return (
     <Slide sectionLabel="01 · Contexte">
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 56, alignItems: 'center' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 60, alignItems: 'center' }}>
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            style={{
-              display: 'inline-flex',
-              padding: '14px 22px',
-              background: '#fff',
-              borderRadius: 16,
-              marginBottom: 28,
-            }}
-          >
-            <img src="img/entreprise/icem_logo.png" alt="Logo ICEM" style={{ height: 96, objectFit: 'contain' }} />
-          </motion.div>
-
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -56,32 +41,33 @@ export default function ICEM() {
           transition={{ duration: 0.9, delay: 0.35 }}
           style={{
             display: 'flex',
-            gap: 14,
-            padding: 20,
+            flexDirection: 'column',
+            gap: 20,
+            alignItems: 'center',
+            padding: 32,
             background: 'linear-gradient(180deg, rgba(24, 37, 98, 0.35), rgba(10, 18, 48, 0.35))',
             border: '1px solid rgba(104, 121, 201, 0.2)',
             borderRadius: 20,
           }}
         >
-          <div style={{ height: 540, aspectRatio: '700 / 933', borderRadius: 12, overflow: 'hidden' }}>
-            <img src="img/entreprise/icem.png" alt="Site ICEM Nabeul" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: 540 }}>
+          <img src="img/entreprise/icem.png" alt="ICEM" style={{ height: 90, objectFit: 'contain' }} />
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, width: '100%',
+          }}>
             {['produit1', 'produit2', 'produit3'].map((p, i) => (
               <motion.div
                 key={p}
-                initial={{ opacity: 0, x: 16 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.7 + i * 0.12 }}
                 style={{
-                  flex: 1,
                   aspectRatio: '1',
                   borderRadius: 10,
                   overflow: 'hidden',
                   background: '#fff',
                 }}
               >
-                <img src={`img/entreprise/${p}.png`} alt={`Faisceau électrique ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={`img/entreprise/${p}.png`} alt={p} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </motion.div>
             ))}
           </div>

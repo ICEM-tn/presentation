@@ -154,7 +154,7 @@
 
 ## 24 — Pipeline de données temps réel (45 s)
 
-> Le pipeline temps réel enchaîne 5 étapes, sans aucune action humaine. 1 — la Raspberry Pi lit les 5 capteurs toutes les 60 secondes et envoie un JSON sur l'endpoint d'ingestion. 2 — le backend valide la mesure, l'associe à la machine et l'enregistre dans MongoDB. 3 — à chaque ingestion, le backend appelle automatiquement le microservice IA. 4 — FastAPI renvoie la probabilité de panne, le type et la cause probable. 5 — 2 seuils décident de l'action : à partir de 60 %, une alerte d'avertissement ; à partir de 80 %, une alerte critique, une intervention prédictive en attente sous 48 heures, et une notification push au responsable maintenance. De la mesure à l'alerte, il faut moins d'une seconde — l'inférence elle-même prend moins de 35 millisecondes. Le développement de ces briques constitue la partie la plus dense du projet.
+> Le pipeline temps réel enchaîne 5 étapes, sans aucune action humaine. **1** — la Raspberry Pi lit les capteurs toutes les 10 à 60 secondes et envoie un JSON au backend. **2** — le backend enregistre la mesure dans MongoDB. **3** — toutes les 5 minutes, il envoie à l'IA les mesures des **2 dernières heures**. **4** — FastAPI renvoie la probabilité de panne dans les 24 heures et la cause probable. **5** — à **60 %**, une alerte ; à **80 %**, une alerte critique, une intervention prédictive en attente et une notification push. L'inférence prend moins de 70 millisecondes.
 
 ---
 
@@ -166,43 +166,43 @@
 
 ## 26 — Backend Express + MongoDB (45 s)
 
-> Le backend expose une API REST avec Node.js et Express. MongoDB stocke 9 collections principales — les mêmes que le diagramme de classes : utilisateurs, lignes, machines, maintenances, alertes, capteurs, Raspberry Pi, analyses IA et analyses de fiabilité — plus les checklists et le planning. L'authentification repose sur JWT avec 3 rôles : responsable, chef de ligne, technicien. Côté API, un middleware vérifie le rôle sur chaque route. Côté interface, un fichier de permissions unique masque les pages et les boutons selon le rôle. La Raspberry Pi, elle, s'authentifie par une clé d'API dédiée. Les controllers utilisent un pattern *asyncHandler* pour propager proprement les erreurs. Le seed script initialise la base avec des machines, utilisateurs et checklists de démonstration. Le backend appelle systématiquement le microservice IA à chaque nouvelle mesure.
+> Le backend expose une API REST avec Node.js et Express. MongoDB stocke 9 collections principales — les mêmes que le diagramme de classes : utilisateurs, lignes, machines, maintenances, alertes, capteurs, Raspberry Pi, analyses IA et analyses de fiabilité — plus les checklists et le planning. L'authentification repose sur JWT avec 3 rôles : responsable, chef de ligne, technicien. Côté API, un middleware vérifie le rôle sur chaque route. Côté interface, un fichier de permissions unique masque les pages et les boutons selon le rôle. La Raspberry Pi, elle, s'authentifie par une clé d'API dédiée. Les controllers utilisent un pattern *asyncHandler* pour propager proprement les erreurs. Le seed script initialise la base avec des machines, utilisateurs et checklists de démonstration. Toutes les 5 minutes, le backend envoie au microservice IA les mesures des 2 dernières heures.
 
 ---
 
 ## 27 — Microservice IA FastAPI (45 s)
 
-> Le microservice IA est écrit en Python avec FastAPI. Il expose 5 endpoints : un test de disponibilité, et 4 endpoints de prédiction. Il embarque 4 modèles, chacun avec un rôle précis. Le Random Forest v1 classe les pannes de l'historique ICEM par zone. Le Random Forest v2 trouve en temps réel la cause probable parmi 13 causes physiques. Le XGBoost v3 estime la probabilité de panne dans les 2 heures. Enfin, une régression linéaire projette la fiabilité sur 3 mois. Les seuils pilotent l'action : à 60 %, une alerte ; à 80 %, une alerte critique et une maintenance prédictive. Le backend appelle ce microservice à chaque ingestion de mesure, sans blocage de la Raspberry Pi. Reste à savoir sur quoi ces modèles ont été entraînés.
+> Le microservice IA est en Python, avec FastAPI. Il porte **3 modèles**. Le **Random Forest** répond à « pourquoi ? » : la cause parmi 5. Le **XGBoost** répond à « quand ? » : la probabilité de panne dans les 24 heures. La **régression linéaire** projette la fiabilité sur 3 mois. Les 2 premiers lisent uniquement les mesures des capteurs. Reste à savoir sur quoi ils ont été entraînés.
 
 ---
 
 ## 28 — Dataset d'entraînement (35 s)
 
-> Pour entraîner l'IA, on a 2 sources. D'abord, l'historique réel : 1 467 interventions ICEM sur 5 ans. Ensuite, les capteurs ne sont pas encore en production, donc on a généré 64 800 lectures synthétiques, une toutes les 5 minutes. Chaque cause a sa signature. Une panne moteur fait monter le courant, la température et la vibration. Un encrassement crée un point chaud d'environ 5 degrés. Un paramètre logiciel ne laisse aucune trace. Découpage 80/20, stratifié. Plus tard, on ré-entraînera sur les vraies mesures.
+> Tout part de l'historique ICEM : **1 467 interventions**, surtout en 2022. Seul, il ne suffit pas : un modèle entraîné dessus n'atteint que **0,15** de F1, car il n'y a aucune mesure physique. Mais il nous apprend où placer les capteurs, les horaires de travail et la durée des arrêts. À partir de là, on a généré **112 680 mesures** : 12 mois, 2 machines, **69 pannes**. Pour tester, on coupe **par semaines**, jamais au hasard.
 
 ---
 
-## 29 — Taxonomie de causes (30 s)
+## 29 — Causes suivies (30 s)
 
-> Le modèle classe chaque panne parmi 13 causes physiques, de C01 à C13. On les regroupe en 3 familles. Signature forte : moteur, courroie, casse — les capteurs les voient bien. Signature partielle : encrassement, réglage MINI, carte électronique. Aucune signature : consommable, capteur en défaut, paramètre logiciel — aucun capteur ne peut les voir. C'est honnête : l'IA complète le diagnostic humain, elle ne le remplace pas.
+> Le modèle suit **5 causes** : celles qu'un capteur voit vraiment. La **vibration** : usure mécanique et courroie détendue. La **chaleur moteur** : ventilation encrassée et surcharge, qui fait aussi monter le courant. La **chaleur de l'armoire** : un ventilateur ou un filtre en panne. Les autres pannes, comme une casse ou un réglage, restent signalées par l'IHM Komax.
 
 ---
 
-## 30 — Performances F1 (35 s)
+## 30 — Performances Random Forest (35 s)
 
-> 3 modèles, 3 tâches différentes : on ne compare pas leurs scores entre eux. Le **Random Forest v1**, sur l'historique par zones, reste faible : **0,15**. Le **Random Forest v2** classe les 13 causes plus la classe normale : F1 macro **0,45**, F1 pondéré **0,81**. Les 3 causes sans signature capteur font baisser la moyenne. Le **XGBoost v3** répond à une seule question : dérive dans les 2 heures ? F1 **0,84**, accuracy **0,95**. C'est lui qui déclenche l'alerte. Voyons les erreurs du Random Forest v2.
+> Le Random Forest atteint **0,85** de F1 macro et **0,96** d'accuracy. La meilleure cause est la surchauffe armoire, à **0,95** : elle est la seule à chauffer l'armoire. La plus difficile est l'usure, à **0,67**, car elle monte lentement. Quand le modèle annonce une cause, il a raison dans **80 à 99 %** des cas. Voyons les erreurs.
 
 ---
 
 ## 31 — Matrice de confusion (30 s)
 
-> Chaque ligne montre où vont les cas réels d'une cause. Sur la diagonale, les causes fortes sont bien reconnues : moteur **86 %**, casse **71 %**. Les causes se confondent peu entre elles. L'erreur principale est la dernière colonne : une panne lue comme « Normal ». C'est le cas de C08, C09 et C13, à **69 à 84 %**, car elles ne laissent aucune trace sur les capteurs. Pour XGBoost, on regarde la courbe ROC.
+> Chaque ligne montre où vont les cas réels d'une cause. Les erreurs sont logiques. La plupart vont vers « Normal » : au début, la panne est encore trop faible. La courroie est parfois prise pour une usure : les 2 font vibrer. La surcharge est parfois prise pour une ventilation encrassée : les 2 chauffent le moteur. Passons au XGBoost.
 
 ---
 
-## 32 — Courbe ROC (30 s)
+## 32 — XGBoost · panne dans 24 h (30 s)
 
-> À gauche, la **courbe ROC** du XGBoost v3 : l'AUC est de **0,978**, le modèle sépare très bien dérive et état normal. À droite, les probabilités prédites : en bleu le normal, en rouge la pré-panne. Les 2 seuils viennent de ce graphique. À **60 %**, une alerte d'avertissement : on accepte quelques fausses alertes. À **80 %**, une alerte critique et une maintenance prédictive automatique. Ces prédictions arrivent ensuite chez l'utilisateur, d'abord sur le web.
+> Le XGBoost a une **AUC de 0,94**. Pour l'atelier, le plus important : sur **69 pannes**, les **69** ont été annoncées, avec **19,5 heures** d'avance en médiane. Sur une machine saine, on a environ **1 fausse alerte par semaine**. Les 2 seuils viennent de ce graphique : **60 %** pour une alerte, **80 %** pour une intervention prédictive. Ces prédictions arrivent ensuite chez l'utilisateur, d'abord sur le web.
 
 ---
 
@@ -250,13 +250,13 @@
 
 ## 40 — KPI et résultats (30 s)
 
-> En chiffres : une architecture en 5 couches, de la perception à l'application. 5 capteurs par machine. 4 modèles d'apprentissage ; le XGBoost atteint 0,84 de F1 sur la dérive, avec une AUC de 0,978. Moins d'une seconde entre la mesure et l'alerte. 2 applications sur la même API, testée par plus de 120 requêtes Postman. Les 3 objectifs sont atteints : instrumenter, prédire, restituer. Ces chiffres nous amènent à la conclusion.
+> En chiffres : une architecture en 5 couches, de la perception à l'application. 5 capteurs par machine. **3 modèles** d'apprentissage ; le XGBoost annonce **69 pannes sur 69**, environ 20 heures avant. 2 applications sur la même API, testée par plus de **120 requêtes** Postman. Les 3 objectifs sont atteints : instrumenter, prédire, restituer. Ces chiffres nous amènent à la conclusion.
 
 ---
 
 ## 41 — Conclusion (30 s)
 
-> En conclusion, nous livrons un **prototype opérationnel** sur 3 axes. **1** — instrumenter : 5 capteurs par machine, moins d'une seconde de la mesure à l'alerte. **2** — prédire : le Random Forest trouve la cause parmi 13, le XGBoost atteint 0,84 de F1 ; au-delà de 80 %, une maintenance prédictive est créée automatiquement. **3** — restituer : web et mobile sur la même API, notifications push, rapport de fiabilité, le tout déployé chez ICEM. Place aux perspectives.
+> En conclusion, nous livrons un **prototype opérationnel** sur 3 axes. **1** — instrumenter : 5 capteurs par machine, une analyse toutes les 5 minutes. **2** — prédire : le Random Forest trouve la cause parmi 5 avec **0,85** de F1, le XGBoost annonce la panne dans les 24 heures ; au-delà de 80 %, une maintenance prédictive est créée automatiquement. **3** — restituer : web et mobile sur la même API, notifications push, rapport de fiabilité, le tout déployé chez ICEM. Place aux perspectives.
 
 ---
 

@@ -70,27 +70,38 @@ function StepNode({ step, index, total, delayBase }) {
       </motion.div>
 
       {!isLast && (
-        <div style={{ position: 'absolute', top: 39, left: '65%', right: 0, height: 2, transform: 'translateX(0)', overflow: 'hidden', zIndex: 1 }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(104, 121, 201, 0.25)' }} />
-          <motion.div
-            initial={{ x: '-100%' }}
-            animate={{ x: '100%' }}
-            transition={{
-              duration: 1,
-              delay: delay + 0.4,
-              repeat: Infinity,
-              repeatDelay: total * 0.4 - 1,
-              ease: 'easeInOut',
-            }}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(90deg, transparent, var(--orange-400), transparent)',
-            }}
-          />
+        // Relie le bord droit de cette icône au bord gauche de la suivante
+        // (icône = 78 px centrée ; gap entre étapes = 16 px)
+        <div style={{ position: 'absolute', top: 38, left: 'calc(50% + 39px)', right: 'calc(-50% - 16px + 39px)', height: 3, zIndex: 1 }}>
+          <div style={{ position: 'absolute', inset: 0, borderRadius: 2, background: 'rgba(255, 122, 26, 0.35)', overflow: 'hidden' }}>
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: '100%' }}
+              transition={{
+                duration: 1,
+                delay: delay + 0.4,
+                repeat: Infinity,
+                repeatDelay: total * 0.4 - 1,
+                ease: 'easeInOut',
+              }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(90deg, transparent, var(--orange-400), transparent)',
+              }}
+            />
+          </div>
+          <div style={{
+            position: 'absolute',
+            right: -1,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: 0,
+            height: 0,
+            borderTop: '7px solid transparent',
+            borderBottom: '7px solid transparent',
+            borderLeft: '10px solid rgba(255, 122, 26, 0.75)',
+          }} />
         </div>
       )}
     </div>

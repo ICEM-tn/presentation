@@ -13,6 +13,7 @@ export default function SensorSCT() {
         'Fréquence secteur 50/60 Hz',
         'Numérisation via ADS1015 · 12 bits sur I²C',
       ]}
+      why="Non-invasive : on clippe la pince autour du câble, sans le couper ni interrompre la production. Le courant total de l'armoire reflète l'état mécanique agrégé de tous les moteurs — une surintensité signale une contrainte cachée."
       accent="var(--green-400)"
     />
   );
